@@ -50,7 +50,7 @@ def main():
               'corpus_commit':manifest['commit'], 'embedding':settings.embedding_model,
               'reranker':settings.rerank_model,'llm':settings.llm_model,
               'dataset_sha256':hashlib.sha256(Path('eval/benchmark.jsonl').read_bytes()).hexdigest(),
-              'scope':'Draft agent-authored labels; anchor matching is a retrieval proxy, not semantic correctness. No human-reviewed answer accuracy. Latency includes live embedding calls; no cache.',
+              'scope':'Reviewed labels v2: anchors refined and verified against source on 2026-10-18 (see eval/refine_anchors.py, audit_labels.py). Anchor matching is a retrieval proxy, not a full answer-correctness score. Latency includes live embedding calls; no cache.',
               'retrieval':[], 'answers':[]}
     def save():
         output.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')

@@ -1,0 +1,41 @@
+name: Verify RAG project
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install test dependencies
+        run: |
+          python -m pip install -r requirements-docker.txt pytest
+          npm ci
+      - name: Python and frontend checks
+        run: |
+          python -m pytest -q
+          python eval/audit_labels.py
+          node tests/markdown.cjs
+          node scripts/check_compose.cjs
+      - name: Offline Docker end-to-end check
+        run: |
+          cp .env.example .env
+          python scripts/verify_docker.py
+      - name: Save Docker verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-verification
+          path: data/docker-verification.json
+          if-no-files-found: ignore

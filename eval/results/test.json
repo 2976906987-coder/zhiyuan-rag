@@ -1,21 +1,21 @@
 {
-  "created_at": "2026-10-18T07:41:47.052421+00:00",
+  "created_at": "2026-10-18T12:53:00.239588+00:00",
   "split": "test",
   "status": "complete",
   "corpus_commit": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
   "embedding": "BAAI/bge-m3",
   "reranker": "BAAI/bge-reranker-v2-m3",
   "llm": "deepseek-v4-pro",
-  "dataset_sha256": "7357686f92cf49b81ea3eb9fe6aa9d763697f849f313bd6c17e358fb3d831490",
-  "scope": "Draft agent-authored labels; anchor matching is a retrieval proxy, not semantic correctness. No human-reviewed answer accuracy. Latency includes live embedding calls; no cache.",
+  "dataset_sha256": "f83daa84267cdd8b48b2245d59f15005860d31f08cff3254e3392d3f62217a3b",
+  "scope": "Reviewed labels v2: anchors refined and verified against source on 2026-10-18 (see eval/refine_anchors.py, audit_labels.py). Anchor matching is a retrieval proxy, not a full answer-correctness score. Latency includes live embedding calls; no cache.",
   "retrieval": [
     {
       "case_id": "q005",
       "question": "路径参数声明为 int 后，字符串数字会如何处理？",
       "mode": "vector",
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_hit_at_5": 0,
+      "evidence_mrr_at_5": 0,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -54,7 +54,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 961.94
+      "latency_ms": 881.71
     },
     {
       "case_id": "q005",
@@ -62,7 +62,7 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.3333333333333333,
+      "evidence_mrr_at_5": 0.2,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -101,7 +101,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 11.33
+      "latency_ms": 11.58
     },
     {
       "case_id": "q005",
@@ -109,7 +109,7 @@
       "mode": "hybrid",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_mrr_at_5": 0.25,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -148,7 +148,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 915.38
+      "latency_ms": 933.24
     },
     {
       "case_id": "q005",
@@ -164,38 +164,38 @@
           "chunk_id": "0293afb7-0e3c-44e5-a907-202833ccdf9d",
           "text": "# 查询参数\r\n\r\n声明的参数不是路径参数时，路径操作函数会把该参数自动解释为**查询**参数。\r\n\r\n```Python hl_lines=\"9\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\nfake_items_db = [{\"item_name\": \"Foo\"}, {\"item_name\": \"Bar\"}, {\"item_name\": \"Baz\"}]\r\n\r\n\r\n@app.get(\"/items/\")\r\nasync def read_item(skip: int = 0, limit: int = 10):\r\n    return fake_items_db[skip : skip + limit]\r\n\r\n```\r\n\r\n查询字符串是键值对的集合，这些键值对位于 URL 的 `?` 之后，以 `&` 分隔。\r\n\r\n例如，以下 URL 中：\r\n\r\n```\r\nhttp://127.0.0.1:8000/items/?skip=0&limit=10\r\n```\r\n\r\n……查询参数为：\r\n\r\n* `skip`：值为 `0`\r\n* `limit`：值为 `10`\r\n\r\n这些值都是 URL 的组成部分，因此，它们的类型**本应**是字符串。\r\n\r\n但声明 Python 类型（上例中为 `int`）之后，这些值就会转换为声明的类型，并进行类型校验。\r\n\r\n所有应用于路径参数的流程也适用于查询参数：\r\n\r\n* （显而易见的）编辑器支持\r\n* 数据<abbr title=\"将来自 HTTP 请求的字符串转换为 Python 数据类型\">**解析**</abbr>\r\n* 数据校验\r\n* API 文档\r\n\r\n## 默认值\r\n\r\n查询参数不是路径的固定内容，它是可选的，还支持默认值。\r\n\r\n上例用 `skip=0` 和 `limit=10`",
           "score": 0.03278688524590164,
-          "rerank_score": 0.8728863596916199
+          "rerank_score": 0.8730646967887878
         },
         {
           "filename": "path-params.md",
           "chunk_id": "4a83fc79-8f10-4923-a6f6-9526d583a94d",
           "text": "# 路径参数\r\n\r\nFastAPI 支持使用 Python 字符串格式化语法声明**路径参数**（**变量**）：\r\n\r\n```Python hl_lines=\"6-7\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/items/{item_id}\")\r\nasync def read_item(item_id):\r\n    return {\"item_id\": item_id}\r\n\r\n```\r\n\r\n这段代码把路径参数 `item_id` 的值传递给路径函数的参数 `item_id`。\r\n\r\n运行示例并访问 <a href=\"http://127.0.0.1:8000/items/foo\" class=\"external-link\" target=\"_blank\">http://127.0.0.1:8000/items/foo</a>，可获得如下响应：\r\n\r\n```JSON\r\n{\"item_id\":\"foo\"}\r\n```\r\n\r\n## 声明路径参数的类型\r\n\r\n使用 Python 标准类型注解，声明路径操作函数中路径参数的类型。\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/items/{item_id}\")\r\nasync def read_item(item_id: int):\r\n    return {\"item_id\": item_id}\r\n\r\n```\r\n\r\n本例把 `item_id` 的类型声明为 `int`。\r\n\r\n/// check | \"检查\"\r\n\r\n类型声明将为函数提供错误检查、代码补全等编辑器支持。\r\n\r\n///\r\n\r\n## 数据<abbr tit",
           "score": 0.03200204813108039,
-          "rerank_score": 0.4452555179595947
+          "rerank_score": 0.44381681084632874
         },
         {
           "filename": "body.md",
           "chunk_id": "578ab245-49fe-4f84-8244-cb267423aa17",
           "text": "[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{item_id}\")\r\nasync def update_item(item_id: int, item: Item, q: Union[str, None] = None):\r\n    result = {\"item_id\": item_id, **item.dict()}\r\n    if q:\r\n        result.update({\"q\": q})\r\n    return result\r\n\r\n```\r\n\r\n////\r\n\r\n函数参数按如下规则进行识别：\r\n\r\n- **路径**中声明了相同参数的参数，是路径参数\r\n- 类型是（`int`、`float`、`str`、`bool` 等）**单类型**的参数，是**查询**参数\r\n- 类型是 **Pydantic 模型**的参数，是**请求体**\r\n\r\n/// note | \"笔记\"\r\n\r\n因为默认值是 `None`， FastAPI 会把 `q` 当作可选参数。\r\n\r\nFastAPI 不使用 `Optional[str]` 中的 `Optional`， 但 `Optional` 可以让编辑器提供更好的支持，并检测错误。\r\n\r\n///\r\n\r\n## 不使用 Pydantic\r\n\r\n即便不使用 Pydantic 模型也能使用 **Body** 参数。详见[请求体 - 多参数：请求体中的单值](body-multiple-params.md#_2){.internal-link target=\\_blank}。",
           "score": 0.02631578947368421,
-          "rerank_score": 0.3613355755805969
+          "rerank_score": 0.3610917031764984
         },
         {
           "filename": "body.md",
           "chunk_id": "694a631f-6630-414f-9f05-e1e576f43c44",
           "text": "item_dict.update({\"price_with_tax\": price_with_tax})\r\n    return item_dict\r\n\r\n```\r\n\r\n////\r\n\r\n## 请求体 + 路径参数\r\n\r\n**FastAPI** 支持同时声明路径参数和请求体。\r\n\r\n**FastAPI** 能识别与**路径参数**匹配的函数参数，还能识别从**请求体**中获取的类型为 Pydantic 模型的函数参数。\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"15-16\"\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{item_id}\")\r\nasync def update_item(item_id: int, item: Item):\r\n    return {\"item_id\": item_id, **item.dict()}\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"17-18\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel)",
           "score": 0.02668564312399929,
-          "rerank_score": 0.1349285989999771
+          "rerank_score": 0.1353827863931656
         },
         {
           "filename": "query-params.md",
           "chunk_id": "6ed1bbf6-3876-4507-ae6b-caf664ed8b64",
           "text": "ription\": \"This is an amazing item that has a long description\"}\r\n        )\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"8 10\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/users/{user_id}/items/{item_id}\")\r\nasync def read_user_item(\r\n    user_id: int, item_id: str, q: Union[str, None] = None, short: bool = False\r\n):\r\n    item = {\"item_id\": item_id, \"owner_id\": user_id}\r\n    if q:\r\n        item.update({\"q\": q})\r\n    if not short:\r\n        item.update(\r\n            {\"description\": \"This is an amazing item that has a long description\"}\r\n        )\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n## 必选查询参数\r\n\r\n为不是路径参数的参数声明默认值（至此，仅有查询参数），该参数就**不是必选**的了。\r\n\r\n如果只想把参数设为**可选**，但又不想指定参数的值，则要把默认值设为 `None`。\r\n\r\n如果要把查询参数设置为**必选**，就不要声明默认值",
           "score": 0.027425373134328357,
-          "rerank_score": 0.12425951659679413
+          "rerank_score": 0.12273716181516647
         }
       ],
-      "latency_ms": 2459.02
+      "latency_ms": 1996.55
     },
     {
       "case_id": "q006",
@@ -203,8 +203,8 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "path-params.md",
@@ -242,7 +242,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.2
+      "latency_ms": 11.17
     },
     {
       "case_id": "q006",
@@ -250,8 +250,8 @@
       "mode": "hybrid",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "path-params.md",
@@ -289,7 +289,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 875.91
+      "latency_ms": 895.3
     },
     {
       "case_id": "q006",
@@ -305,46 +305,46 @@
           "chunk_id": "79786c38-315e-4e80-8c7f-0d4a8c641f83",
           "text": "括多种语言的代码生成工具。\r\n\r\n## Pydantic\r\n\r\nFastAPI 充分地利用了 <a href=\"https://docs.pydantic.dev/\" class=\"external-link\" target=\"_blank\">Pydantic</a> 的优势，用它在后台校验数据。众所周知，Pydantic 擅长的就是数据校验。\r\n\r\n同样，`str`、`float`、`bool` 以及很多复合数据类型都可以使用类型声明。\r\n\r\n下一章介绍详细内容。\r\n\r\n## 顺序很重要\r\n\r\n有时，*路径操作*中的路径是写死的。\r\n\r\n比如要使用 `/users/me` 获取当前用户的数据。\r\n\r\n然后还要使用 `/users/{user_id}`，通过用户 ID 获取指定用户的数据。\r\n\r\n由于*路径操作*是按顺序依次运行的，因此，一定要在 `/users/{user_id}` 之前声明 `/users/me` ：\r\n\r\n```Python hl_lines=\"6  11\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/users/me\")\r\nasync def read_user_me():\r\n    return {\"user_id\": \"the current user\"}\r\n\r\n\r\n@app.get(\"/users/{user_id}\")\r\nasync def read_user(user_id: str):\r\n    return {\"user_id\": user_id}\r\n\r\n```\r\n\r\n否则，`/users/{user_id}` 将匹配 `/users/me`，FastAPI 会**认为**正在接收值为 `\"me\"` 的 `user_id` 参数。\r\n\r\n## 预设值",
           "score": 0.030834914611005692,
-          "rerank_score": 0.8589849472045898
+          "rerank_score": 0.8598267436027527
         },
         {
           "filename": "static-files.md",
           "chunk_id": "c595ce44-1868-4815-9183-e42de5b52e80",
           "text": "任何东西等等。\r\n\r\n你可以在**高级用户指南**中了解更多。\r\n\r\n## 细节\r\n\r\n这个 \"子应用\" 会被 \"挂载\" 到第一个 `\"/static\"` 指向的子路径。因此，任何以`\"/static\"`开头的路径都会被它处理。\r\n\r\n `directory=\"static\"` 指向包含你的静态文件的目录名字。\r\n\r\n`name=\"static\"` 提供了一个能被**FastAPI**内部使用的名字。\r\n\r\n所有这些参数可以不同于\"`static`\"，根据你应用的需要和具体细节调整它们。\r\n\r\n## 更多信息\r\n\r\n更多细节和选择查阅 <a href=\"https://www.starlette.io/staticfiles/\" class=\"external-link\" target=\"_blank\">Starlette's docs about Static Files</a>.",
           "score": 0.02921395544346364,
-          "rerank_score": 0.20070187747478485
+          "rerank_score": 0.19596871733665466
         },
         {
           "filename": "path-params.md",
           "chunk_id": "59031a1f-d463-450c-9a1d-037bbc7cf20f",
           "text": "er_id: str):\r\n    return {\"user_id\": user_id}\r\n\r\n```\r\n\r\n否则，`/users/{user_id}` 将匹配 `/users/me`，FastAPI 会**认为**正在接收值为 `\"me\"` 的 `user_id` 参数。\r\n\r\n## 预设值\r\n\r\n路径操作使用 Python 的 <abbr title=\"Enumeration\">`Enum`</abbr> 类型接收预设的*路径参数*。\r\n\r\n### 创建 `Enum` 类\r\n\r\n导入 `Enum` 并创建继承自 `str` 和 `Enum` 的子类。\r\n\r\n通过从 `str` 继承，API 文档就能把值的类型定义为**字符串**，并且能正确渲染。\r\n\r\n然后，创建包含固定值的类属性，这些固定值是可用的有效值：\r\n\r\n```Python hl_lines=\"1  6-9\"\r\nfrom enum import Enum\r\n\r\nfrom fastapi import FastAPI\r\n\r\n\r\nclass ModelName(str, Enum):\r\n    alexnet = \"alexnet\"\r\n    resnet = \"resnet\"\r\n    lenet = \"lenet\"\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/models/{model_name}\")\r\nasync def get_model(model_name: ModelName):\r\n    if model_name is ModelName.alexnet:\r\n        return {\"model_name\": model_name, \"message\": \"Deep Learning FTW!\"}\r\n\r\n    if model_name.value ==",
           "score": 0.032266458495966696,
-          "rerank_score": 0.18064987659454346
+          "rerank_score": 0.17693671584129333
         },
         {
           "filename": "query-params.md",
           "chunk_id": "0270dd55-19a4-4b87-98ae-dee495789e3e",
           "text": "* 数据<abbr title=\"将来自 HTTP 请求的字符串转换为 Python 数据类型\">**解析**</abbr>\r\n* 数据校验\r\n* API 文档\r\n\r\n## 默认值\r\n\r\n查询参数不是路径的固定内容，它是可选的，还支持默认值。\r\n\r\n上例用 `skip=0` 和 `limit=10` 设定默认值。\r\n\r\n访问 URL：\r\n\r\n```\r\nhttp://127.0.0.1:8000/items/\r\n```\r\n\r\n与访问以下地址相同：\r\n\r\n```\r\nhttp://127.0.0.1:8000/items/?skip=0&limit=10\r\n```\r\n\r\n但如果访问：\r\n\r\n```\r\nhttp://127.0.0.1:8000/items/?skip=20\r\n```\r\n\r\n查询参数的值就是：\r\n\r\n* `skip=20`：在 URL 中设定的值\r\n* `limit=10`：使用默认值\r\n\r\n## 可选参数\r\n\r\n同理，把默认值设为 `None` 即可声明**可选的**查询参数：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/items/{item_id}\")\r\nasync def read_item(item_id: str, q: str | None = None):\r\n    if q:\r\n        return {\"item_id\": item_id, \"q\": q}\r\n    return {\"item_id\": item_id}\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"9\"",
           "score": 0.027425373134328357,
-          "rerank_score": 0.012215908616781235
+          "rerank_score": 0.012089366093277931
         },
         {
           "filename": "static-files.md",
           "chunk_id": "6925adcc-8b5c-4a16-99cb-84c01b78ca82",
           "text": "# 静态文件\r\n\r\n您可以使用 `StaticFiles`从目录中自动提供静态文件。\r\n\r\n## 使用`StaticFiles`\r\n\r\n* 导入`StaticFiles`。\r\n* \"挂载\"(Mount) 一个 `StaticFiles()` 实例到一个指定路径。\r\n\r\n```Python hl_lines=\"2  6\"\r\nfrom fastapi import FastAPI\r\nfrom fastapi.staticfiles import StaticFiles\r\n\r\napp = FastAPI()\r\n\r\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\r\n\r\n```\r\n\r\n/// note | \"技术细节\"\r\n\r\n你也可以用 `from starlette.staticfiles import StaticFiles`。\r\n\r\n**FastAPI** 提供了和 `starlette.staticfiles` 相同的 `fastapi.staticfiles` ，只是为了方便你，开发者。但它确实来自Starlette。\r\n\r\n///\r\n\r\n### 什么是\"挂载\"(Mounting)\r\n\r\n\"挂载\" 表示在特定路径添加一个完全\"独立的\"应用，然后负责处理所有子路径。\r\n\r\n这与使用`APIRouter`不同，因为安装的应用程序是完全独立的。OpenAPI和来自你主应用的文档不会包含已挂载应用的任何东西等等。\r\n\r\n你可以在**高级用户指南**中了解更多。\r\n\r\n## 细节\r\n\r\n这个 \"子应用\" 会被 \"挂载\" 到第一个 `\"/static\"` 指向的子路径。因此，任何以`\"/static\"`开头的路径都会被它处理。\r\n\r\n `directory=\"static\"` 指向包含你的静态文件",
           "score": 0.029957522915269395,
-          "rerank_score": 0.00895013939589262
+          "rerank_score": 0.008755356073379517
         }
       ],
-      "latency_ms": 2331.06
+      "latency_ms": 2036.94
     },
     {
       "case_id": "q006",
       "question": "固定路径 /users/me 和动态路径哪个应先声明？",
       "mode": "vector",
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.3333333333333333,
+      "evidence_hit_at_5": 0,
+      "evidence_mrr_at_5": 0,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -383,7 +383,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 924.57
+      "latency_ms": 875.97
     },
     {
       "case_id": "q007",
@@ -430,7 +430,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 905.6
+      "latency_ms": 986.06
     },
     {
       "case_id": "q007",
@@ -474,10 +474,10 @@
           "chunk_id": "e4615f14-7e60-4cd1-9153-ebc00931862c",
           "text": "d: str):\r\n    return items[item_id]\r\n\r\n```\r\n\r\n然后响应中将不会包含那些默认值，而是仅有实际设置的值。\r\n\r\n因此，如果你向*路径操作*发送 ID 为 `foo` 的商品的请求，则响应（不包括默认值）将为：\r\n\r\n```JSON\r\n{\r\n    \"name\": \"Foo\",\r\n    \"price\": 50.2\r\n}\r\n```\r\n\r\n/// info\r\n\r\nFastAPI 通过 Pydantic 模型的 `.dict()` 配合 <a href=\"https://docs.pydantic.dev/latest/concepts/serialization/#modeldict\" class=\"external-link\" target=\"_blank\">该方法的 `exclude_unset` 参数</a> 来实现此功能。\r\n\r\n///\r\n\r\n/// info\r\n\r\n你还可以使用：\r\n\r\n* `response_model_exclude_defaults=True`\r\n* `response_model_exclude_none=True`\r\n\r\n参考 <a href=\"https://docs.pydantic.dev/latest/concepts/serialization/#modeldict\" class=\"external-link\" target=\"_blank\">Pydantic 文档</a> 中对 `exclude_defaults` 和 `exclude_none` 的描述。\r\n\r\n///\r\n\r\n#### 默认值字段有实际值的数据\r\n\r\n但是，如果你的数据在具有默认值的模型字段中有实际的值，例如 ID 为 `bar` 的项：\r\n\r\n```Python hl_lines=\"3  5\"\r\n{\r\n    \"nam",
           "score": 0.015384615384615385,
-          "rerank_score": 0.29892802238464355
+          "rerank_score": 0.3072488307952881
         }
       ],
-      "latency_ms": 2103.25
+      "latency_ms": 2132.34
     },
     {
       "case_id": "q007",
@@ -524,7 +524,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 887.7
+      "latency_ms": 895.96
     },
     {
       "case_id": "q007",
@@ -532,8 +532,8 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "path-params.md",
@@ -571,7 +571,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 11.13
+      "latency_ms": 10.72
     },
     {
       "case_id": "q008",
@@ -587,7 +587,7 @@
           "chunk_id": "8b91feb8-454a-4a01-97f0-e3401d1f3ccd",
           "text": "不影响文档正常运行，但是不会添加该参数包含路径的说明。\r\n\r\n### 路径转换器\r\n\r\n直接使用 Starlette 的选项声明包含*路径*的*路径参数*：\r\n\r\n```\r\n/files/{file_path:path}\r\n```\r\n\r\n本例中，参数名为 `file_path`，结尾部分的 `:path` 说明该参数应匹配*路径*。\r\n\r\n用法如下：\r\n\r\n```Python hl_lines=\"6\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/files/{file_path:path}\")\r\nasync def read_file(file_path: str):\r\n    return {\"file_path\": file_path}\r\n\r\n```\r\n\r\n/// tip | \"提示\"\r\n\r\n注意，包含 `/home/johndoe/myfile.txt` 的路径参数要以斜杠（`/`）开头。\r\n\r\n本例中的 URL 是 `/files//home/johndoe/myfile.txt`。注意，`files` 和 `home` 之间要使用**双斜杠**（`//`）。\r\n\r\n///\r\n\r\n## 小结\r\n\r\n通过简短、直观的 Python 标准类型声明，**FastAPI** 可以获得：\r\n\r\n- 编辑器支持：错误检查，代码自动补全等\r\n- 数据**<abbr title=\"把来自 HTTP 请求中的字符串转换为 Python 数据类型\">解析</abbr>**\r\n- 数据校验\r\n- API 注解和 API 文档\r\n\r\n只需要声明一次即可。\r\n\r\n这可能是除了性能以外，**FastAPI** 与其它框架相比的主要优势。",
           "score": 0.03278688524590164,
-          "rerank_score": 0.8282104134559631
+          "rerank_score": 0.8277562856674194
         },
         {
           "filename": "path-params.md",
@@ -608,7 +608,7 @@
           "chunk_id": "fbbd7b05-9017-4950-b50e-4ab874c23eb3",
           "text": "值为 `10.5`的 `float`，等等。\r\n\r\n///\r\n\r\n### `response_model_include` 和 `response_model_exclude`\r\n\r\n你还可以使用*路径操作装饰器*的 `response_model_include` 和 `response_model_exclude` 参数。\r\n\r\n它们接收一个由属性名称 `str` 组成的 `set` 来包含（忽略其他的）或者排除（包含其他的）这些属性。\r\n\r\n如果你只有一个 Pydantic 模型，并且想要从输出中移除一些数据，则可以使用这种快捷方法。\r\n\r\n/// tip\r\n\r\n但是依然建议你使用上面提到的主意，使用多个类而不是这些参数。\r\n\r\n这是因为即使使用 `response_model_include` 或 `response_model_exclude` 来省略某些属性，在应用程序的 OpenAPI 定义（和文档）中生成的 JSON Schema 仍将是完整的模型。\r\n\r\n这也适用于作用类似的 `response_model_by_alias`。\r\n\r\n///\r\n\r\n```Python hl_lines=\"31  37\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: float = 10.5\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"pri",
           "score": 0.026356857985087564,
-          "rerank_score": 0.11910257488489151
+          "rerank_score": 0.11432566493749619
         },
         {
           "filename": "path-params.md",
@@ -618,7 +618,7 @@
           "rerank_score": 0.08418206870555878
         }
       ],
-      "latency_ms": 2060.89
+      "latency_ms": 2189.74
     },
     {
       "case_id": "q008",
@@ -665,7 +665,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 880.48
+      "latency_ms": 889.72
     },
     {
       "case_id": "q008",
@@ -712,7 +712,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 10.96
+      "latency_ms": 11.69
     },
     {
       "case_id": "q008",
@@ -759,7 +759,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 903.2
+      "latency_ms": 858.35
     },
     {
       "case_id": "q013",
@@ -806,7 +806,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 959.16
+      "latency_ms": 943.8
     },
     {
       "case_id": "q013",
@@ -814,8 +814,8 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "body.md",
@@ -853,7 +853,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 12.02
+      "latency_ms": 12.05
     },
     {
       "case_id": "q013",
@@ -900,7 +900,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 896.3
+      "latency_ms": 967.91
     },
     {
       "case_id": "q013",
@@ -908,46 +908,46 @@
       "mode": "rerank",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.3333333333333333,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "body.md",
           "chunk_id": "bceb1210-4ab1-45f5-8a21-628653433b83",
           "text": "# 创建数据模型\r\n\r\n把数据模型声明为继承 `BaseModel` 的类。\r\n\r\n使用 Python 标准类型声明所有属性：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"5-9\"\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"7-11\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return",
           "score": 0.014492753623188406,
-          "rerank_score": 0.9132654666900635
+          "rerank_score": 0.9126412868499756
         },
         {
           "filename": "body.md",
           "chunk_id": "59f5bc83-b7e3-4bd8-9bd6-2b39f30deaa8",
           "text": "aseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"4\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n## 创建数据模型\r\n\r\n把数据模型声明为继承 `BaseModel` 的类。\r\n\r\n使用 Python 标准类型声明所有属性：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"5-9\"\r\nfrom fastapi import FastAPI\r\nf",
           "score": 0.014925373134328358,
-          "rerank_score": 0.8941150307655334
+          "rerank_score": 0.8968951106071472
         },
         {
           "filename": "body.md",
           "chunk_id": "74af18df-b1a6-430b-b233-572538a4b508",
           "text": "# 请求体\r\n\r\nFastAPI 使用**请求体**从客户端（例如浏览器）向 API 发送数据。\r\n\r\n**请求体**是客户端发送给 API 的数据。**响应体**是 API 发送给客户端的数据。\r\n\r\nAPI 基本上肯定要发送**响应体**，但是客户端不一定发送**请求体**。\r\n\r\n使用 <a href=\"https://docs.pydantic.dev/\" class=\"external-link\" target=\"_blank\">Pydantic</a> 模型声明**请求体**，能充分利用它的功能和优点。\r\n\r\n/// info | \"说明\"\r\n\r\n发送数据使用 `POST`（最常用）、`PUT`、`DELETE`、`PATCH` 等操作。\r\n\r\n规范中没有定义使用 `GET` 发送请求体的操作，但不管怎样，FastAPI 也支持这种方式，只不过仅用于非常复杂或极端的用例。\r\n\r\n我们不建议使用 `GET`，因此，在 Swagger UI 交互文档中不会显示有关 `GET` 的内容，而且代理协议也不一定支持 `GET`。\r\n\r\n///\r\n\r\n## 导入 Pydantic 的 `BaseModel`\r\n\r\n从 `pydantic` 中导入 `BaseModel`：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"2\"\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = Fas",
           "score": 0.03252247488101534,
-          "rerank_score": 0.8391133546829224
+          "rerank_score": 0.8412706255912781
         },
         {
           "filename": "body.md",
           "chunk_id": "61fc3273-8f00-400f-b5d1-152552ad24cc",
           "text": "i import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"18\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n……此处，请求体参数的类型为 `Item` 模型。\r\n\r\n## 结论\r\n\r\n仅使用 Python 类型声明，**FastAPI** 就可以：\r\n\r\n* 以 JSON 形式读取请求体\r\n* （在必要时）把请求体转换为对应的",
           "score": 0.03252247488101534,
-          "rerank_score": 0.8369324803352356
+          "rerank_score": 0.8361631631851196
         },
         {
           "filename": "first-steps.md",
           "chunk_id": "2836d9ea-1249-4590-af49-614c6e5aaef8",
           "text": "FastAPI`\r\n\r\n```Python hl_lines=\"1\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/\")\r\nasync def root():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n`FastAPI` 是一个为你的 API 提供了所有功能的 Python 类。\r\n\r\n/// note | \"技术细节\"\r\n\r\n`FastAPI` 是直接从 `Starlette` 继承的类。\r\n\r\n你可以通过 `FastAPI` 使用所有的 Starlette 的功能。\r\n\r\n///\r\n\r\n### 步骤 2：创建一个 `FastAPI`「实例」\r\n\r\n```Python hl_lines=\"3\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/\")\r\nasync def root():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n这里的变量 `app` 会是 `FastAPI` 类的一个「实例」。\r\n\r\n这个实例将是创建你所有 API 的主要交互对象。\r\n\r\n这个 `app` 同样在如下命令中被 `uvicorn` 所引用：\r\n\r\n<div class=\"termy\">\r\n\r\n```console\r\n$ uvicorn main:app --reload\r\n\r\n<span style=\"color: green;\">INFO</span>:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)\r\n```\r\n\r\n</div>",
           "score": 0.02804284323271665,
-          "rerank_score": 0.8323436975479126
+          "rerank_score": 0.8320079445838928
         }
       ],
-      "latency_ms": 2178.15
+      "latency_ms": 2114.03
     },
     {
       "case_id": "q014",
@@ -955,7 +955,7 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.3333333333333333,
+      "evidence_mrr_at_5": 0.2,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -994,7 +994,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 11.7
+      "latency_ms": 13.17
     },
     {
       "case_id": "q014",
@@ -1041,7 +1041,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 899.86
+      "latency_ms": 930.8
     },
     {
       "case_id": "q014",
@@ -1057,38 +1057,38 @@
           "chunk_id": "f5849c49-ba6d-49ea-b9e2-00921ee7d6aa",
           "text": "price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n与声明查询参数一样，包含默认值的模型属性是可选的，否则就是必选的。默认值为 `None` 的模型属性也是可选的。\r\n\r\n例如，上述模型声明如下 JSON **对象**（即 Python **字典**）：\r\n\r\n```JSON\r\n{\r\n    \"name\": \"Foo\",\r\n    \"description\": \"An optional description\",\r\n    \"price\": 45.2,\r\n    \"tax\": 3.5\r\n}\r\n```\r\n\r\n……由于 `description` 和 `tax` 是可选的（默认值为 `None`），下面的 JSON **对象**也有效：\r\n\r\n```JSON\r\n{\r\n    \"name\": \"Foo\",\r\n    \"price\": 45.2\r\n}\r\n```\r\n\r\n## 声明请求体参数\r\n\r\n使用与声明路径和查询参数相同的方式声明请求体，把请求体添加至*路径操作*：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"16\"\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float",
           "score": 0.031009615384615385,
-          "rerank_score": 0.6465772390365601
+          "rerank_score": 0.6490476131439209
         },
         {
           "filename": "body.md",
           "chunk_id": "61fc3273-8f00-400f-b5d1-152552ad24cc",
           "text": "i import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"18\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n……此处，请求体参数的类型为 `Item` 模型。\r\n\r\n## 结论\r\n\r\n仅使用 Python 类型声明，**FastAPI** 就可以：\r\n\r\n* 以 JSON 形式读取请求体\r\n* （在必要时）把请求体转换为对应的",
           "score": 0.015151515151515152,
-          "rerank_score": 0.5107648968696594
+          "rerank_score": 0.5166015028953552
         },
         {
           "filename": "request-files.md",
           "chunk_id": "3cc12374-0bc0-4c6f-ae53-17563acac136",
           "text": "eloper.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST </code></a> 小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `File` 和 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `multipart/form-data`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 可选文件上传\r\n\r\n您可以通过使用标准类型注解并将 None 作为默认值的方式将一个文件参数设为可选:\r\n\r\n//// tab | Python 3.9+\r\n\r\n```Python hl_lines=\"7  14\"\r\nfrom fastapi import FastAPI, File, UploadFile\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/files/\")\r\nasync def create_file(file: bytes | None = File(default=None)):\r\n    if not file:\r\n        return {\"message\": \"No file sent\"}\r\n    else:\r\n        return {\"file_size\": len(file)}\r\n\r\n\r\n@app.post(\"/uploadfile/\")\r\nasync def",
           "score": 0.029418126757516764,
-          "rerank_score": 0.5031979084014893
+          "rerank_score": 0.49798890948295593
         },
         {
           "filename": "body.md",
           "chunk_id": "578ab245-49fe-4f84-8244-cb267423aa17",
           "text": "[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{item_id}\")\r\nasync def update_item(item_id: int, item: Item, q: Union[str, None] = None):\r\n    result = {\"item_id\": item_id, **item.dict()}\r\n    if q:\r\n        result.update({\"q\": q})\r\n    return result\r\n\r\n```\r\n\r\n////\r\n\r\n函数参数按如下规则进行识别：\r\n\r\n- **路径**中声明了相同参数的参数，是路径参数\r\n- 类型是（`int`、`float`、`str`、`bool` 等）**单类型**的参数，是**查询**参数\r\n- 类型是 **Pydantic 模型**的参数，是**请求体**\r\n\r\n/// note | \"笔记\"\r\n\r\n因为默认值是 `None`， FastAPI 会把 `q` 当作可选参数。\r\n\r\nFastAPI 不使用 `Optional[str]` 中的 `Optional`， 但 `Optional` 可以让编辑器提供更好的支持，并检测错误。\r\n\r\n///\r\n\r\n## 不使用 Pydantic\r\n\r\n即便不使用 Pydantic 模型也能使用 **Body** 参数。详见[请求体 - 多参数：请求体中的单值](body-multiple-params.md#_2){.internal-link target=\\_blank}。",
           "score": 0.028782894736842105,
-          "rerank_score": 0.4395245909690857
+          "rerank_score": 0.4372391402721405
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "d8dd08a7-5964-4706-a8b5-d06536e74f2c",
           "text": "form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST</code></a>小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `application/x-www-form-urlencoded`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 小结\r\n\r\n本节介绍了如何使用 `Form` 声明表单数据输入参数。",
           "score": 0.03128054740957967,
-          "rerank_score": 0.3202380836009979
+          "rerank_score": 0.3172861337661743
         }
       ],
-      "latency_ms": 2049.19
+      "latency_ms": 2217.86
     },
     {
       "case_id": "q014",
@@ -1135,7 +1135,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 946.68
+      "latency_ms": 878.7
     },
     {
       "case_id": "q015",
@@ -1182,7 +1182,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 903.64
+      "latency_ms": 964.28
     },
     {
       "case_id": "q015",
@@ -1229,7 +1229,7 @@
           "rerank_score": 0.06626579165458679
         }
       ],
-      "latency_ms": 2175.56
+      "latency_ms": 2364.56
     },
     {
       "case_id": "q015",
@@ -1276,7 +1276,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 888.7
+      "latency_ms": 1003.1
     },
     {
       "case_id": "q015",
@@ -1323,7 +1323,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 12.91
+      "latency_ms": 11.4
     },
     {
       "case_id": "q016",
@@ -1339,7 +1339,7 @@
           "chunk_id": "694a631f-6630-414f-9f05-e1e576f43c44",
           "text": "item_dict.update({\"price_with_tax\": price_with_tax})\r\n    return item_dict\r\n\r\n```\r\n\r\n////\r\n\r\n## 请求体 + 路径参数\r\n\r\n**FastAPI** 支持同时声明路径参数和请求体。\r\n\r\n**FastAPI** 能识别与**路径参数**匹配的函数参数，还能识别从**请求体**中获取的类型为 Pydantic 模型的函数参数。\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"15-16\"\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{item_id}\")\r\nasync def update_item(item_id: int, item: Item):\r\n    return {\"item_id\": item_id, **item.dict()}\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"17-18\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel)",
           "score": 0.03131881575727918,
-          "rerank_score": 0.99512779712677
+          "rerank_score": 0.9950592517852783
         },
         {
           "filename": "body.md",
@@ -1360,7 +1360,7 @@
           "chunk_id": "3cc12374-0bc0-4c6f-ae53-17563acac136",
           "text": "eloper.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST </code></a> 小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `File` 和 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `multipart/form-data`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 可选文件上传\r\n\r\n您可以通过使用标准类型注解并将 None 作为默认值的方式将一个文件参数设为可选:\r\n\r\n//// tab | Python 3.9+\r\n\r\n```Python hl_lines=\"7  14\"\r\nfrom fastapi import FastAPI, File, UploadFile\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/files/\")\r\nasync def create_file(file: bytes | None = File(default=None)):\r\n    if not file:\r\n        return {\"message\": \"No file sent\"}\r\n    else:\r\n        return {\"file_size\": len(file)}\r\n\r\n\r\n@app.post(\"/uploadfile/\")\r\nasync def",
           "score": 0.030776515151515152,
-          "rerank_score": 0.9640100002288818
+          "rerank_score": 0.9647938013076782
         },
         {
           "filename": "background-tasks.md",
@@ -1370,7 +1370,7 @@
           "rerank_score": 0.9473159909248352
         }
       ],
-      "latency_ms": 2101.71
+      "latency_ms": 2216.06
     },
     {
       "case_id": "q016",
@@ -1417,7 +1417,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 942.67
+      "latency_ms": 1027.74
     },
     {
       "case_id": "q016",
@@ -1464,7 +1464,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 12.01
+      "latency_ms": 17.75
     },
     {
       "case_id": "q016",
@@ -1511,15 +1511,15 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 900.26
+      "latency_ms": 1133.7
     },
     {
       "case_id": "q021",
       "question": "FastAPI 通过哪个对象声明表单字段？",
       "mode": "vector",
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.25,
+      "evidence_hit_at_5": 0,
+      "evidence_mrr_at_5": 0,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -1558,7 +1558,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 955.28
+      "latency_ms": 1038.96
     },
     {
       "case_id": "q021",
@@ -1566,8 +1566,8 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.3333333333333333,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "request-forms.md",
@@ -1605,16 +1605,16 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 11.21
+      "latency_ms": 13.18
     },
     {
       "case_id": "q021",
       "question": "FastAPI 通过哪个对象声明表单字段？",
       "mode": "hybrid",
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_hit_at_5": 0,
+      "evidence_mrr_at_5": 0,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "request-forms.md",
@@ -1652,7 +1652,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 891.22
+      "latency_ms": 1101.29
     },
     {
       "case_id": "q021",
@@ -1660,46 +1660,46 @@
       "mode": "rerank",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.2,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "request-forms.md",
           "chunk_id": "cc48f6c7-580e-42f0-9713-245a9b741e72",
           "text": "login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字段发送 `username` 和 `password`。\r\n\r\n<abbr title=\"specification\">该规范</abbr>要求字段必须命名为 `username` 和 `password`，并通过表单字段发送，不能用 JSON。\r\n\r\n使用 `Form` 可以声明与 `Body` （及 `Query`、`Path`、`Cookie`）相同的元数据和验证。\r\n\r\n/// info | \"说明\"\r\n\r\n`Form` 是直接继承自 `Body` 的类。\r\n\r\n///\r\n\r\n/// tip | \"提示\"\r\n\r\n声明表单体要显式使用 `Form` ，否则，FastAPI 会把该参数当作查询参数或请求体（JSON）参数。\r\n\r\n///\r\n\r\n## 关于 \"表单字段\"\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n表单数据的「媒体类型」编码一般为 `application/x-www-form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\"",
           "score": 0.032018442622950824,
-          "rerank_score": 0.9585853219032288
+          "rerank_score": 0.9576727747917175
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "d8dd08a7-5964-4706-a8b5-d06536e74f2c",
           "text": "form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST</code></a>小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `application/x-www-form-urlencoded`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 小结\r\n\r\n本节介绍了如何使用 `Form` 声明表单数据输入参数。",
           "score": 0.03128054740957967,
-          "rerank_score": 0.903195321559906
+          "rerank_score": 0.9036587476730347
         },
         {
           "filename": "body.md",
           "chunk_id": "61fc3273-8f00-400f-b5d1-152552ad24cc",
           "text": "i import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float\r\n    tax: float | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"18\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n……此处，请求体参数的类型为 `Item` 模型。\r\n\r\n## 结论\r\n\r\n仅使用 Python 类型声明，**FastAPI** 就可以：\r\n\r\n* 以 JSON 形式读取请求体\r\n* （在必要时）把请求体转换为对应的",
           "score": 0.015873015873015872,
-          "rerank_score": 0.8760034441947937
+          "rerank_score": 0.8771064281463623
         },
         {
           "filename": "body.md",
           "chunk_id": "f5849c49-ba6d-49ea-b9e2-00921ee7d6aa",
           "text": "price: float\r\n    tax: Union[float, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/items/\")\r\nasync def create_item(item: Item):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n与声明查询参数一样，包含默认值的模型属性是可选的，否则就是必选的。默认值为 `None` 的模型属性也是可选的。\r\n\r\n例如，上述模型声明如下 JSON **对象**（即 Python **字典**）：\r\n\r\n```JSON\r\n{\r\n    \"name\": \"Foo\",\r\n    \"description\": \"An optional description\",\r\n    \"price\": 45.2,\r\n    \"tax\": 3.5\r\n}\r\n```\r\n\r\n……由于 `description` 和 `tax` 是可选的（默认值为 `None`），下面的 JSON **对象**也有效：\r\n\r\n```JSON\r\n{\r\n    \"name\": \"Foo\",\r\n    \"price\": 45.2\r\n}\r\n```\r\n\r\n## 声明请求体参数\r\n\r\n使用与声明路径和查询参数相同的方式声明请求体，把请求体添加至*路径操作*：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"16\"\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: str | None = None\r\n    price: float",
           "score": 0.014705882352941176,
-          "rerank_score": 0.8529327511787415
+          "rerank_score": 0.8522212505340576
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "1d9165f0-ec52-4746-85ee-749d5a3832f3",
           "text": "# 表单数据\r\n\r\n接收的不是 JSON，而是表单字段时，要使用 `Form`。\r\n\r\n/// info | \"说明\"\r\n\r\n要使用表单，需预先安装 <a href=\"https://github.com/Kludex/python-multipart\" class=\"external-link\" target=\"_blank\">`python-multipart`</a>。\r\n\r\n例如，`pip install python-multipart`。\r\n\r\n///\r\n\r\n## 导入 `Form`\r\n\r\n从 `fastapi` 导入 `Form`：\r\n\r\n```Python hl_lines=\"1\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n## 定义 `Form` 参数\r\n\r\n创建表单（`Form`）参数的方式与 `Body` 和 `Query` 一样：\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字",
           "score": 0.015873015873015872,
-          "rerank_score": 0.7894627451896667
+          "rerank_score": 0.7887910008430481
         }
       ],
-      "latency_ms": 2166.99
+      "latency_ms": 2082.54
     },
     {
       "case_id": "q022",
@@ -1746,7 +1746,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 11.01
+      "latency_ms": 16.68
     },
     {
       "case_id": "q022",
@@ -1754,8 +1754,8 @@
       "mode": "hybrid",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "request-forms.md",
@@ -1793,7 +1793,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 882.86
+      "latency_ms": 913.71
     },
     {
       "case_id": "q022",
@@ -1809,38 +1809,38 @@
           "chunk_id": "cc48f6c7-580e-42f0-9713-245a9b741e72",
           "text": "login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字段发送 `username` 和 `password`。\r\n\r\n<abbr title=\"specification\">该规范</abbr>要求字段必须命名为 `username` 和 `password`，并通过表单字段发送，不能用 JSON。\r\n\r\n使用 `Form` 可以声明与 `Body` （及 `Query`、`Path`、`Cookie`）相同的元数据和验证。\r\n\r\n/// info | \"说明\"\r\n\r\n`Form` 是直接继承自 `Body` 的类。\r\n\r\n///\r\n\r\n/// tip | \"提示\"\r\n\r\n声明表单体要显式使用 `Form` ，否则，FastAPI 会把该参数当作查询参数或请求体（JSON）参数。\r\n\r\n///\r\n\r\n## 关于 \"表单字段\"\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n表单数据的「媒体类型」编码一般为 `application/x-www-form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\"",
           "score": 0.03200204813108039,
-          "rerank_score": 0.7803542613983154
+          "rerank_score": 0.7759864926338196
         },
         {
           "filename": "request-files.md",
           "chunk_id": "c9854005-7e7e-4abd-972f-663d3852883d",
           "text": "` *路径操作函数*  内，则可以直接访问 `UploadFile.file`，例如：\r\n\r\n```Python\r\ncontents = myfile.file.read()\r\n```\r\n\r\n/// note | \"`async` 技术细节\"\r\n\r\n使用 `async` 方法时，**FastAPI** 在线程池中执行文件方法，并 `await` 操作完成。\r\n\r\n///\r\n\r\n/// note | \"Starlette 技术细节\"\r\n\r\n**FastAPI** 的 `UploadFile` 直接继承自 **Starlette** 的 `UploadFile`，但添加了一些必要功能，使之与 **Pydantic** 及 FastAPI 的其它部件兼容。\r\n\r\n///\r\n\r\n## 什么是 「表单数据」\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n不包含文件时，表单数据一般用 `application/x-www-form-urlencoded`「媒体类型」编码。\r\n\r\n但表单包含文件时，编码为 `multipart/form-data`。使用了 `File`，**FastAPI** 就知道要从请求体的正确位置获取文件。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的",
           "score": 0.029551337359792925,
-          "rerank_score": 0.7012724876403809
+          "rerank_score": 0.6992754340171814
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "d8dd08a7-5964-4706-a8b5-d06536e74f2c",
           "text": "form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST</code></a>小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `application/x-www-form-urlencoded`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 小结\r\n\r\n本节介绍了如何使用 `Form` 声明表单数据输入参数。",
           "score": 0.032266458495966696,
-          "rerank_score": 0.550783097743988
+          "rerank_score": 0.553065836429596
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "1d9165f0-ec52-4746-85ee-749d5a3832f3",
           "text": "# 表单数据\r\n\r\n接收的不是 JSON，而是表单字段时，要使用 `Form`。\r\n\r\n/// info | \"说明\"\r\n\r\n要使用表单，需预先安装 <a href=\"https://github.com/Kludex/python-multipart\" class=\"external-link\" target=\"_blank\">`python-multipart`</a>。\r\n\r\n例如，`pip install python-multipart`。\r\n\r\n///\r\n\r\n## 导入 `Form`\r\n\r\n从 `fastapi` 导入 `Form`：\r\n\r\n```Python hl_lines=\"1\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n## 定义 `Form` 参数\r\n\r\n创建表单（`Form`）参数的方式与 `Body` 和 `Query` 一样：\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字",
           "score": 0.03128054740957967,
-          "rerank_score": 0.35991373658180237
+          "rerank_score": 0.3679768145084381
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "54136677-5aa2-4fa6-9e67-ce765f7245f5",
           "text": "# 请求体 - 更新数据\r\n\r\n## 用 `PUT` 更新数据\r\n\r\n更新数据请用 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/PUT\" class=\"external-link\" target=\"_blank\">HTTP `PUT`</a> 操作。\r\n\r\n把输入数据转换为以 JSON 格式存储的数据（比如，使用 NoSQL 数据库时），可以使用 `jsonable_encoder`。例如，把 `datetime` 转换为 `str`。\r\n\r\n```Python hl_lines=\"30-35\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},\r\n    \"bar\": {\"name\": \"Bar\", \"description\": \"The bartenders\", \"price\": 62, \"tax\": 20.2},",
           "score": 0.014705882352941176,
-          "rerank_score": 0.020917808637022972
+          "rerank_score": 0.02078581228852272
         }
       ],
-      "latency_ms": 2022.92
+      "latency_ms": 2091.55
     },
     {
       "case_id": "q022",
@@ -1848,8 +1848,8 @@
       "mode": "vector",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.3333333333333333,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "request-forms.md",
@@ -1887,7 +1887,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1074.17
+      "latency_ms": 906.09
     },
     {
       "case_id": "q023",
@@ -1934,7 +1934,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1454.01
+      "latency_ms": 906.83
     },
     {
       "case_id": "q023",
@@ -1950,38 +1950,38 @@
           "chunk_id": "d8dd08a7-5964-4706-a8b5-d06536e74f2c",
           "text": "form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST</code></a>小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `application/x-www-form-urlencoded`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 小结\r\n\r\n本节介绍了如何使用 `Form` 声明表单数据输入参数。",
           "score": 0.032266458495966696,
-          "rerank_score": 0.9933937191963196
+          "rerank_score": 0.9934899806976318
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "cc48f6c7-580e-42f0-9713-245a9b741e72",
           "text": "login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字段发送 `username` 和 `password`。\r\n\r\n<abbr title=\"specification\">该规范</abbr>要求字段必须命名为 `username` 和 `password`，并通过表单字段发送，不能用 JSON。\r\n\r\n使用 `Form` 可以声明与 `Body` （及 `Query`、`Path`、`Cookie`）相同的元数据和验证。\r\n\r\n/// info | \"说明\"\r\n\r\n`Form` 是直接继承自 `Body` 的类。\r\n\r\n///\r\n\r\n/// tip | \"提示\"\r\n\r\n声明表单体要显式使用 `Form` ，否则，FastAPI 会把该参数当作查询参数或请求体（JSON）参数。\r\n\r\n///\r\n\r\n## 关于 \"表单字段\"\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n表单数据的「媒体类型」编码一般为 `application/x-www-form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\"",
           "score": 0.031754032258064516,
-          "rerank_score": 0.9711164832115173
+          "rerank_score": 0.971530020236969
         },
         {
           "filename": "request-files.md",
           "chunk_id": "c9854005-7e7e-4abd-972f-663d3852883d",
           "text": "` *路径操作函数*  内，则可以直接访问 `UploadFile.file`，例如：\r\n\r\n```Python\r\ncontents = myfile.file.read()\r\n```\r\n\r\n/// note | \"`async` 技术细节\"\r\n\r\n使用 `async` 方法时，**FastAPI** 在线程池中执行文件方法，并 `await` 操作完成。\r\n\r\n///\r\n\r\n/// note | \"Starlette 技术细节\"\r\n\r\n**FastAPI** 的 `UploadFile` 直接继承自 **Starlette** 的 `UploadFile`，但添加了一些必要功能，使之与 **Pydantic** 及 FastAPI 的其它部件兼容。\r\n\r\n///\r\n\r\n## 什么是 「表单数据」\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n不包含文件时，表单数据一般用 `application/x-www-form-urlencoded`「媒体类型」编码。\r\n\r\n但表单包含文件时，编码为 `multipart/form-data`。使用了 `File`，**FastAPI** 就知道要从请求体的正确位置获取文件。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的",
           "score": 0.03177805800756621,
-          "rerank_score": 0.9693135619163513
+          "rerank_score": 0.9690797328948975
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "1d9165f0-ec52-4746-85ee-749d5a3832f3",
           "text": "# 表单数据\r\n\r\n接收的不是 JSON，而是表单字段时，要使用 `Form`。\r\n\r\n/// info | \"说明\"\r\n\r\n要使用表单，需预先安装 <a href=\"https://github.com/Kludex/python-multipart\" class=\"external-link\" target=\"_blank\">`python-multipart`</a>。\r\n\r\n例如，`pip install python-multipart`。\r\n\r\n///\r\n\r\n## 导入 `Form`\r\n\r\n从 `fastapi` 导入 `Form`：\r\n\r\n```Python hl_lines=\"1\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n## 定义 `Form` 参数\r\n\r\n创建表单（`Form`）参数的方式与 `Body` 和 `Query` 一样：\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字",
           "score": 0.031054405392392875,
-          "rerank_score": 0.5246465802192688
+          "rerank_score": 0.5270483493804932
         },
         {
           "filename": "request-files.md",
           "chunk_id": "f48ebf33-9b56-4d3b-b831-834535d598cb",
           "text": "{\"filenames\": [file.filename for file in files]}\r\n\r\n\r\n@app.get(\"/\")\r\nasync def main():\r\n    content = \"\"\"\r\n<body>\r\n<form action=\"/files/\" enctype=\"multipart/form-data\" method=\"post\">\r\n<input name=\"files\" type=\"file\" multiple>\r\n<input type=\"submit\">\r\n</form>\r\n<form action=\"/uploadfiles/\" enctype=\"multipart/form-data\" method=\"post\">\r\n<input name=\"files\" type=\"file\" multiple>\r\n<input type=\"submit\">\r\n</form>\r\n</body>\r\n    \"\"\"\r\n    return HTMLResponse(content=content)\r\n\r\n```\r\n\r\n////\r\n\r\n## 小结\r\n\r\n本节介绍了如何用 `File` 把上传文件声明为（表单数据的）输入参数。",
           "score": 0.029957522915269395,
-          "rerank_score": 0.409995973110199
+          "rerank_score": 0.4142906367778778
         }
       ],
-      "latency_ms": 2148.95
+      "latency_ms": 2128.63
     },
     {
       "case_id": "q023",
@@ -2028,7 +2028,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1052.08
+      "latency_ms": 1070.83
     },
     {
       "case_id": "q023",
@@ -2075,7 +2075,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 15.32
+      "latency_ms": 11.38
     },
     {
       "case_id": "q024",
@@ -2091,38 +2091,38 @@
           "chunk_id": "d8dd08a7-5964-4706-a8b5-d06536e74f2c",
           "text": "form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST</code></a>小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `application/x-www-form-urlencoded`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 小结\r\n\r\n本节介绍了如何使用 `Form` 声明表单数据输入参数。",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9881911277770996
+          "rerank_score": 0.9881860017776489
         },
         {
           "filename": "request-files.md",
           "chunk_id": "3cc12374-0bc0-4c6f-ae53-17563acac136",
           "text": "eloper.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST </code></a> 小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `File` 和 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `multipart/form-data`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 可选文件上传\r\n\r\n您可以通过使用标准类型注解并将 None 作为默认值的方式将一个文件参数设为可选:\r\n\r\n//// tab | Python 3.9+\r\n\r\n```Python hl_lines=\"7  14\"\r\nfrom fastapi import FastAPI, File, UploadFile\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/files/\")\r\nasync def create_file(file: bytes | None = File(default=None)):\r\n    if not file:\r\n        return {\"message\": \"No file sent\"}\r\n    else:\r\n        return {\"file_size\": len(file)}\r\n\r\n\r\n@app.post(\"/uploadfile/\")\r\nasync def",
           "score": 0.030303030303030304,
-          "rerank_score": 0.9790695309638977
+          "rerank_score": 0.9788327217102051
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "1d9165f0-ec52-4746-85ee-749d5a3832f3",
           "text": "# 表单数据\r\n\r\n接收的不是 JSON，而是表单字段时，要使用 `Form`。\r\n\r\n/// info | \"说明\"\r\n\r\n要使用表单，需预先安装 <a href=\"https://github.com/Kludex/python-multipart\" class=\"external-link\" target=\"_blank\">`python-multipart`</a>。\r\n\r\n例如，`pip install python-multipart`。\r\n\r\n///\r\n\r\n## 导入 `Form`\r\n\r\n从 `fastapi` 导入 `Form`：\r\n\r\n```Python hl_lines=\"1\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n## 定义 `Form` 参数\r\n\r\n创建表单（`Form`）参数的方式与 `Body` 和 `Query` 一样：\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI, Form\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字",
           "score": 0.030798389007344232,
-          "rerank_score": 0.9515243172645569
+          "rerank_score": 0.9514266848564148
         },
         {
           "filename": "request-forms.md",
           "chunk_id": "cc48f6c7-580e-42f0-9713-245a9b741e72",
           "text": "login/\")\r\nasync def login(username: str = Form(), password: str = Form()):\r\n    return {\"username\": username}\r\n\r\n```\r\n\r\n例如，OAuth2 规范的 \"密码流\" 模式规定要通过表单字段发送 `username` 和 `password`。\r\n\r\n<abbr title=\"specification\">该规范</abbr>要求字段必须命名为 `username` 和 `password`，并通过表单字段发送，不能用 JSON。\r\n\r\n使用 `Form` 可以声明与 `Body` （及 `Query`、`Path`、`Cookie`）相同的元数据和验证。\r\n\r\n/// info | \"说明\"\r\n\r\n`Form` 是直接继承自 `Body` 的类。\r\n\r\n///\r\n\r\n/// tip | \"提示\"\r\n\r\n声明表单体要显式使用 `Form` ，否则，FastAPI 会把该参数当作查询参数或请求体（JSON）参数。\r\n\r\n///\r\n\r\n## 关于 \"表单字段\"\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n表单数据的「媒体类型」编码一般为 `application/x-www-form-urlencoded`。\r\n\r\n但包含文件的表单编码为 `multipart/form-data`。文件处理详见下节。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\"",
           "score": 0.03225806451612903,
-          "rerank_score": 0.8940704464912415
+          "rerank_score": 0.8937097191810608
         },
         {
           "filename": "request-files.md",
           "chunk_id": "c9854005-7e7e-4abd-972f-663d3852883d",
           "text": "` *路径操作函数*  内，则可以直接访问 `UploadFile.file`，例如：\r\n\r\n```Python\r\ncontents = myfile.file.read()\r\n```\r\n\r\n/// note | \"`async` 技术细节\"\r\n\r\n使用 `async` 方法时，**FastAPI** 在线程池中执行文件方法，并 `await` 操作完成。\r\n\r\n///\r\n\r\n/// note | \"Starlette 技术细节\"\r\n\r\n**FastAPI** 的 `UploadFile` 直接继承自 **Starlette** 的 `UploadFile`，但添加了一些必要功能，使之与 **Pydantic** 及 FastAPI 的其它部件兼容。\r\n\r\n///\r\n\r\n## 什么是 「表单数据」\r\n\r\n与 JSON 不同，HTML 表单（`<form></form>`）向服务器发送数据通常使用「特殊」的编码。\r\n\r\n**FastAPI** 要确保从正确的位置读取数据，而不是读取 JSON。\r\n\r\n/// note | \"技术细节\"\r\n\r\n不包含文件时，表单数据一般用 `application/x-www-form-urlencoded`「媒体类型」编码。\r\n\r\n但表单包含文件时，编码为 `multipart/form-data`。使用了 `File`，**FastAPI** 就知道要从请求体的正确位置获取文件。\r\n\r\n编码和表单字段详见 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的",
           "score": 0.029083245521601686,
-          "rerank_score": 0.39215415716171265
+          "rerank_score": 0.3983537554740906
         }
       ],
-      "latency_ms": 2931.02
+      "latency_ms": 2076.84
     },
     {
       "case_id": "q024",
@@ -2169,7 +2169,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1309.0
+      "latency_ms": 888.77
     },
     {
       "case_id": "q024",
@@ -2216,7 +2216,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 13.05
+      "latency_ms": 12.56
     },
     {
       "case_id": "q024",
@@ -2263,7 +2263,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1103.1
+      "latency_ms": 876.85
     },
     {
       "case_id": "q029",
@@ -2310,7 +2310,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1181.17
+      "latency_ms": 943.29
     },
     {
       "case_id": "q029",
@@ -2357,7 +2357,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 50.71
+      "latency_ms": 11.43
     },
     {
       "case_id": "q029",
@@ -2404,7 +2404,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1556.09
+      "latency_ms": 928.7
     },
     {
       "case_id": "q029",
@@ -2420,38 +2420,38 @@
           "chunk_id": "eeedd2f1-2fb4-4a59-9492-b82f0e92ec1a",
           "text": "sync def read_items() -> Any:\r\n    return [\r\n        {\"name\": \"Portal Gun\", \"price\": 42.0},\r\n        {\"name\": \"Plumbus\", \"price\": 32.0},\r\n    ]\r\n\r\n```\r\n\r\n////\r\n\r\n/// note\r\n\r\n注意，`response_model`是「装饰器」方法（`get`，`post` 等）的一个参数。不像之前的所有参数和请求体，它不属于*路径操作函数*。\r\n\r\n///\r\n\r\n它接收的类型与你将为 Pydantic 模型属性所声明的类型相同，因此它可以是一个 Pydantic 模型，但也可以是一个由 Pydantic 模型组成的 `list`，例如 `List[Item]`。\r\n\r\nFastAPI 将使用此 `response_model` 来：\r\n\r\n* 将输出数据转换为其声明的类型。\r\n* 校验数据。\r\n* 在 OpenAPI 的*路径操作*中为响应添加一个 JSON Schema。\r\n* 并在自动生成文档系统中使用。\r\n\r\n但最重要的是：\r\n\r\n* 会将输出数据限制在该模型定义内。下面我们会看到这一点有多重要。\r\n\r\n/// note | \"技术细节\"\r\n\r\n响应模型在参数中被声明，而不是作为函数返回类型的注解，这是因为路径函数可能不会真正返回该响应模型，而是返回一个 `dict`、数据库对象或其他模型，然后再使用 `response_model` 来执行字段约束和序列化。\r\n\r\n///\r\n\r\n## 返回与输入相同的数据\r\n\r\n现在我们声明一个 `UserIn` 模型，它将包含一个明文密码属性。\r\n\r\n```Python hl_lines=\"9  11\"\r\nfrom typing import Union\r\n\r\nfrom fas",
           "score": 0.031009615384615385,
-          "rerank_score": 0.9780666828155518
+          "rerank_score": 0.9783778786659241
         },
         {
           "filename": "response-model.md",
           "chunk_id": "ccb29b9d-549b-44c3-9016-70cecdfcce0e",
           "text": "\": {\"name\": \"Bar\", \"description\": \"The Bar fighters\", \"price\": 62, \"tax\": 20.2},\r\n    \"baz\": {\r\n        \"name\": \"Baz\",\r\n        \"description\": \"There goes my baz\",\r\n        \"price\": 50.2,\r\n        \"tax\": 10.5,\r\n    },\r\n}\r\n\r\n\r\n@app.get(\r\n    \"/items/{item_id}/name\",\r\n    response_model=Item,\r\n    response_model_include=[\"name\", \"description\"],\r\n)\r\nasync def read_item_name(item_id: str):\r\n    return items[item_id]\r\n\r\n\r\n@app.get(\"/items/{item_id}/public\", response_model=Item, response_model_exclude=[\"tax\"])\r\nasync def read_item_public_data(item_id: str):\r\n    return items[item_id]\r\n\r\n```\r\n\r\n## 总结\r\n\r\n使用*路径操作装饰器*的 `response_model` 参数来定义响应模型，特别是确保私有数据被过滤掉。\r\n\r\n使用 `response_model_exclude_unset` 来仅返回显式设定的值。",
           "score": 0.032266458495966696,
-          "rerank_score": 0.8969269394874573
+          "rerank_score": 0.8967556953430176
         },
         {
           "filename": "response-model.md",
           "chunk_id": "fbbd7b05-9017-4950-b50e-4ab874c23eb3",
           "text": "值为 `10.5`的 `float`，等等。\r\n\r\n///\r\n\r\n### `response_model_include` 和 `response_model_exclude`\r\n\r\n你还可以使用*路径操作装饰器*的 `response_model_include` 和 `response_model_exclude` 参数。\r\n\r\n它们接收一个由属性名称 `str` 组成的 `set` 来包含（忽略其他的）或者排除（包含其他的）这些属性。\r\n\r\n如果你只有一个 Pydantic 模型，并且想要从输出中移除一些数据，则可以使用这种快捷方法。\r\n\r\n/// tip\r\n\r\n但是依然建议你使用上面提到的主意，使用多个类而不是这些参数。\r\n\r\n这是因为即使使用 `response_model_include` 或 `response_model_exclude` 来省略某些属性，在应用程序的 OpenAPI 定义（和文档）中生成的 JSON Schema 仍将是完整的模型。\r\n\r\n这也适用于作用类似的 `response_model_by_alias`。\r\n\r\n///\r\n\r\n```Python hl_lines=\"31  37\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: str\r\n    description: Union[str, None] = None\r\n    price: float\r\n    tax: float = 10.5\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"pri",
           "score": 0.030158730158730156,
-          "rerank_score": 0.8092026114463806
+          "rerank_score": 0.8104661703109741
         },
         {
           "filename": "response-model.md",
           "chunk_id": "fc537d67-9cb2-43c9-8ed0-36ed7a1976c1",
           "text": "iption\": \"The bartenders\", \"price\": 62, \"tax\": 20.2},\r\n    \"baz\": {\"name\": \"Baz\", \"description\": None, \"price\": 50.2, \"tax\": 10.5, \"tags\": []},\r\n}\r\n\r\n\r\n@app.get(\"/items/{item_id}\", response_model=Item, response_model_exclude_unset=True)\r\nasync def read_item(item_id: str):\r\n    return items[item_id]\r\n\r\n```\r\n\r\n* `description: Union[str, None] = None` 具有默认值 `None`。\r\n* `tax: float = 10.5` 具有默认值 `10.5`.\r\n* `tags: List[str] = []` 具有一个空列表作为默认值： `[]`.\r\n\r\n但如果它们并没有存储实际的值，你可能想从结果中忽略它们的默认值。\r\n\r\n举个例子，当你在 NoSQL 数据库中保存了具有许多可选属性的模型，但你又不想发送充满默认值的很长的 JSON 响应。\r\n\r\n### 使用 `response_model_exclude_unset` 参数\r\n\r\n你可以设置*路径操作装饰器*的 `response_model_exclude_unset=True` 参数：\r\n\r\n```Python hl_lines=\"24\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclas",
           "score": 0.031009615384615385,
-          "rerank_score": 0.7911393046379089
+          "rerank_score": 0.7916296720504761
         },
         {
           "filename": "response-model.md",
           "chunk_id": "f1844b71-c63b-4ee3-85d5-506fba848313",
           "text": "_defaults` 和 `exclude_none` 的描述。\r\n\r\n///\r\n\r\n#### 默认值字段有实际值的数据\r\n\r\n但是，如果你的数据在具有默认值的模型字段中有实际的值，例如 ID 为 `bar` 的项：\r\n\r\n```Python hl_lines=\"3  5\"\r\n{\r\n    \"name\": \"Bar\",\r\n    \"description\": \"The bartenders\",\r\n    \"price\": 62,\r\n    \"tax\": 20.2\r\n}\r\n```\r\n\r\n这些值将包含在响应中。\r\n\r\n#### 具有与默认值相同值的数据\r\n\r\n如果数据具有与默认值相同的值，例如 ID 为 `baz` 的项：\r\n\r\n```Python hl_lines=\"3  5-6\"\r\n{\r\n    \"name\": \"Baz\",\r\n    \"description\": None,\r\n    \"price\": 50.2,\r\n    \"tax\": 10.5,\r\n    \"tags\": []\r\n}\r\n```\r\n\r\n即使 `description`、`tax` 和 `tags` 具有与默认值相同的值，FastAPI 足够聪明 (实际上是 Pydantic 足够聪明) 去认识到这一点，它们的值被显式地所设定（而不是取自默认值）。\r\n\r\n因此，它们将包含在 JSON 响应中。\r\n\r\n/// tip\r\n\r\n请注意默认值可以是任何值，而不仅是`None`。\r\n\r\n它们可以是一个列表（`[]`），一个值为 `10.5`的 `float`，等等。\r\n\r\n///\r\n\r\n### `response_model_include` 和 `response_model_exclude`\r\n\r\n你还可以使用*路径操作装饰器*的 `response_model_include` 和 `response_mode",
           "score": 0.028370221327967807,
-          "rerank_score": 0.6264891624450684
+          "rerank_score": 0.6296463012695312
         }
       ],
-      "latency_ms": 2779.46
+      "latency_ms": 2243.74
     },
     {
       "case_id": "q030",
@@ -2498,7 +2498,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 12.39
+      "latency_ms": 11.47
     },
     {
       "case_id": "q030",
@@ -2545,15 +2545,15 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 974.92
+      "latency_ms": 1023.9
     },
     {
       "case_id": "q030",
       "question": "怎样防止返回的用户对象泄漏密码字段？",
       "mode": "rerank",
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_hit_at_5": 0,
+      "evidence_mrr_at_5": 0,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -2561,7 +2561,7 @@
           "chunk_id": "eeedd2f1-2fb4-4a59-9492-b82f0e92ec1a",
           "text": "sync def read_items() -> Any:\r\n    return [\r\n        {\"name\": \"Portal Gun\", \"price\": 42.0},\r\n        {\"name\": \"Plumbus\", \"price\": 32.0},\r\n    ]\r\n\r\n```\r\n\r\n////\r\n\r\n/// note\r\n\r\n注意，`response_model`是「装饰器」方法（`get`，`post` 等）的一个参数。不像之前的所有参数和请求体，它不属于*路径操作函数*。\r\n\r\n///\r\n\r\n它接收的类型与你将为 Pydantic 模型属性所声明的类型相同，因此它可以是一个 Pydantic 模型，但也可以是一个由 Pydantic 模型组成的 `list`，例如 `List[Item]`。\r\n\r\nFastAPI 将使用此 `response_model` 来：\r\n\r\n* 将输出数据转换为其声明的类型。\r\n* 校验数据。\r\n* 在 OpenAPI 的*路径操作*中为响应添加一个 JSON Schema。\r\n* 并在自动生成文档系统中使用。\r\n\r\n但最重要的是：\r\n\r\n* 会将输出数据限制在该模型定义内。下面我们会看到这一点有多重要。\r\n\r\n/// note | \"技术细节\"\r\n\r\n响应模型在参数中被声明，而不是作为函数返回类型的注解，这是因为路径函数可能不会真正返回该响应模型，而是返回一个 `dict`、数据库对象或其他模型，然后再使用 `response_model` 来执行字段约束和序列化。\r\n\r\n///\r\n\r\n## 返回与输入相同的数据\r\n\r\n现在我们声明一个 `UserIn` 模型，它将包含一个明文密码属性。\r\n\r\n```Python hl_lines=\"9  11\"\r\nfrom typing import Union\r\n\r\nfrom fas",
           "score": 0.029138513513513514,
-          "rerank_score": 0.0652383342385292
+          "rerank_score": 0.0664488822221756
         },
         {
           "filename": "response-model.md",
@@ -2575,7 +2575,7 @@
           "chunk_id": "6bc6829d-101a-4a67-8043-e3279caac7bc",
           "text": "EmailStr\r\n    full_name: Union[str, None] = None\r\n\r\n\r\nclass UserOut(BaseModel):\r\n    username: str\r\n    email: EmailStr\r\n    full_name: Union[str, None] = None\r\n\r\n\r\n@app.post(\"/user/\", response_model=UserOut)\r\nasync def create_user(user: UserIn) -> Any:\r\n    return user\r\n\r\n```\r\n\r\n////\r\n\r\n这样，即便我们的*路径操作函数*将会返回包含密码的相同输入用户：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"24\"\r\nfrom typing import Any\r\n\r\nfrom fastapi import FastAPI\r\nfrom pydantic import BaseModel, EmailStr\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass UserIn(BaseModel):\r\n    username: str\r\n    password: str\r\n    email: EmailStr\r\n    full_name: str | None = None\r\n\r\n\r\nclass UserOut(BaseModel):\r\n    username: str\r\n    email: EmailStr\r\n    full_name: str | None = None\r\n\r\n\r\n@app.post(\"/user/\", response_model=UserOut)\r\nasync def create_user(user: U",
           "score": 0.0315136476426799,
-          "rerank_score": 0.03845755383372307
+          "rerank_score": 0.03753593936562538
         },
         {
           "filename": "response-model.md",
@@ -2592,7 +2592,7 @@
           "rerank_score": 0.028460994362831116
         }
       ],
-      "latency_ms": 2281.9
+      "latency_ms": 2102.06
     },
     {
       "case_id": "q030",
@@ -2639,7 +2639,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 885.01
+      "latency_ms": 887.39
     },
     {
       "case_id": "q031",
@@ -2686,7 +2686,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 916.59
+      "latency_ms": 869.37
     },
     {
       "case_id": "q031",
@@ -2702,38 +2702,38 @@
           "chunk_id": "28f6f5be-683f-44b3-81d6-1c73d08f1b24",
           "text": "有数据被过滤掉。\r\n\r\n使用 `response_model_exclude_unset` 来仅返回显式设定的值。",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9970097541809082
+          "rerank_score": 0.9970122575759888
         },
         {
           "filename": "response-model.md",
           "chunk_id": "ccb29b9d-549b-44c3-9016-70cecdfcce0e",
           "text": "\": {\"name\": \"Bar\", \"description\": \"The Bar fighters\", \"price\": 62, \"tax\": 20.2},\r\n    \"baz\": {\r\n        \"name\": \"Baz\",\r\n        \"description\": \"There goes my baz\",\r\n        \"price\": 50.2,\r\n        \"tax\": 10.5,\r\n    },\r\n}\r\n\r\n\r\n@app.get(\r\n    \"/items/{item_id}/name\",\r\n    response_model=Item,\r\n    response_model_include=[\"name\", \"description\"],\r\n)\r\nasync def read_item_name(item_id: str):\r\n    return items[item_id]\r\n\r\n\r\n@app.get(\"/items/{item_id}/public\", response_model=Item, response_model_exclude=[\"tax\"])\r\nasync def read_item_public_data(item_id: str):\r\n    return items[item_id]\r\n\r\n```\r\n\r\n## 总结\r\n\r\n使用*路径操作装饰器*的 `response_model` 参数来定义响应模型，特别是确保私有数据被过滤掉。\r\n\r\n使用 `response_model_exclude_unset` 来仅返回显式设定的值。",
           "score": 0.03200204813108039,
-          "rerank_score": 0.9804553985595703
+          "rerank_score": 0.980500340461731
         },
         {
           "filename": "response-model.md",
           "chunk_id": "e4615f14-7e60-4cd1-9153-ebc00931862c",
           "text": "d: str):\r\n    return items[item_id]\r\n\r\n```\r\n\r\n然后响应中将不会包含那些默认值，而是仅有实际设置的值。\r\n\r\n因此，如果你向*路径操作*发送 ID 为 `foo` 的商品的请求，则响应（不包括默认值）将为：\r\n\r\n```JSON\r\n{\r\n    \"name\": \"Foo\",\r\n    \"price\": 50.2\r\n}\r\n```\r\n\r\n/// info\r\n\r\nFastAPI 通过 Pydantic 模型的 `.dict()` 配合 <a href=\"https://docs.pydantic.dev/latest/concepts/serialization/#modeldict\" class=\"external-link\" target=\"_blank\">该方法的 `exclude_unset` 参数</a> 来实现此功能。\r\n\r\n///\r\n\r\n/// info\r\n\r\n你还可以使用：\r\n\r\n* `response_model_exclude_defaults=True`\r\n* `response_model_exclude_none=True`\r\n\r\n参考 <a href=\"https://docs.pydantic.dev/latest/concepts/serialization/#modeldict\" class=\"external-link\" target=\"_blank\">Pydantic 文档</a> 中对 `exclude_defaults` 和 `exclude_none` 的描述。\r\n\r\n///\r\n\r\n#### 默认值字段有实际值的数据\r\n\r\n但是，如果你的数据在具有默认值的模型字段中有实际的值，例如 ID 为 `bar` 的项：\r\n\r\n```Python hl_lines=\"3  5\"\r\n{\r\n    \"nam",
           "score": 0.030309988518943745,
-          "rerank_score": 0.6832028031349182
+          "rerank_score": 0.6812726259231567
         },
         {
           "filename": "response-model.md",
           "chunk_id": "f1844b71-c63b-4ee3-85d5-506fba848313",
           "text": "_defaults` 和 `exclude_none` 的描述。\r\n\r\n///\r\n\r\n#### 默认值字段有实际值的数据\r\n\r\n但是，如果你的数据在具有默认值的模型字段中有实际的值，例如 ID 为 `bar` 的项：\r\n\r\n```Python hl_lines=\"3  5\"\r\n{\r\n    \"name\": \"Bar\",\r\n    \"description\": \"The bartenders\",\r\n    \"price\": 62,\r\n    \"tax\": 20.2\r\n}\r\n```\r\n\r\n这些值将包含在响应中。\r\n\r\n#### 具有与默认值相同值的数据\r\n\r\n如果数据具有与默认值相同的值，例如 ID 为 `baz` 的项：\r\n\r\n```Python hl_lines=\"3  5-6\"\r\n{\r\n    \"name\": \"Baz\",\r\n    \"description\": None,\r\n    \"price\": 50.2,\r\n    \"tax\": 10.5,\r\n    \"tags\": []\r\n}\r\n```\r\n\r\n即使 `description`、`tax` 和 `tags` 具有与默认值相同的值，FastAPI 足够聪明 (实际上是 Pydantic 足够聪明) 去认识到这一点，它们的值被显式地所设定（而不是取自默认值）。\r\n\r\n因此，它们将包含在 JSON 响应中。\r\n\r\n/// tip\r\n\r\n请注意默认值可以是任何值，而不仅是`None`。\r\n\r\n它们可以是一个列表（`[]`），一个值为 `10.5`的 `float`，等等。\r\n\r\n///\r\n\r\n### `response_model_include` 和 `response_model_exclude`\r\n\r\n你还可以使用*路径操作装饰器*的 `response_model_include` 和 `response_mode",
           "score": 0.014492753623188406,
-          "rerank_score": 0.6324576139450073
+          "rerank_score": 0.6276854276657104
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "de35a092-b60d-4573-98bc-f9b7f5d442fa",
           "text": "比如，`item.dict(exclude_unset=True)`。\r\n\r\n这段代码生成的 `dict` 只包含创建 `item` 模型时显式设置的数据，而不包括默认值。\r\n\r\n然后再用它生成一个只含已设置（在请求中所发送）数据，且省略了默认值的 `dict`：\r\n\r\n```Python hl_lines=\"34\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},\r\n    \"bar\": {\"name\": \"Bar\", \"description\": \"The bartenders\", \"price\": 62, \"tax\": 20.2},\r\n    \"baz\": {\"name\": \"Baz\", \"description\": None, \"price\": 50.2, \"tax\": 10.5, \"tags\": []},\r\n}\r\n\r\n\r\n@app.get(\"/items/{item_id}\", response_mo",
           "score": 0.029386529386529386,
-          "rerank_score": 0.5050891041755676
+          "rerank_score": 0.505791962146759
         }
       ],
-      "latency_ms": 2165.58
+      "latency_ms": 2433.32
     },
     {
       "case_id": "q031",
@@ -2780,7 +2780,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 903.56
+      "latency_ms": 963.15
     },
     {
       "case_id": "q031",
@@ -2827,7 +2827,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.86
+      "latency_ms": 11.19
     },
     {
       "case_id": "q032",
@@ -2874,7 +2874,7 @@
           "rerank_score": 0.9513024687767029
         }
       ],
-      "latency_ms": 2205.26
+      "latency_ms": 2743.58
     },
     {
       "case_id": "q032",
@@ -2921,7 +2921,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 934.8
+      "latency_ms": 1355.78
     },
     {
       "case_id": "q032",
@@ -2929,7 +2929,7 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.3333333333333333,
+      "evidence_mrr_at_5": 0.25,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -2968,7 +2968,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.44
+      "latency_ms": 11.94
     },
     {
       "case_id": "q032",
@@ -3015,7 +3015,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 931.85
+      "latency_ms": 1514.15
     },
     {
       "case_id": "q037",
@@ -3062,7 +3062,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 896.45
+      "latency_ms": 992.7
     },
     {
       "case_id": "q037",
@@ -3109,7 +3109,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.37
+      "latency_ms": 13.13
     },
     {
       "case_id": "q037",
@@ -3156,7 +3156,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 918.04
+      "latency_ms": 993.1
     },
     {
       "case_id": "q037",
@@ -3172,38 +3172,38 @@
           "chunk_id": "936dacf4-72c7-4290-ac56-149081edd52a",
           "text": "# CORS（跨域资源共享）\r\n\r\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\" class=\"external-link\" target=\"_blank\">CORS 或者「跨域资源共享」</a> 指浏览器中运行的前端拥有与后端通信的 JavaScript 代码，而后端处于与前端不同的「源」的情况。\r\n\r\n## 源\r\n\r\n源是协议（`http`，`https`）、域（`myapp.com`，`localhost`，`localhost.tiangolo.com`）以及端口（`80`、`443`、`8080`）的组合。\r\n\r\n因此，这些都是不同的源：\r\n\r\n* `http://localhost`\r\n* `https://localhost`\r\n* `http://localhost:8080`\r\n\r\n即使它们都在 `localhost` 中，但是它们使用不同的协议或者端口，所以它们都是不同的「源」。\r\n\r\n## 步骤\r\n\r\n假设你的浏览器中有一个前端运行在 `http://localhost:8080`，并且它的 JavaScript 正在尝试与运行在 `http://localhost` 的后端通信（因为我们没有指定端口，浏览器会采用默认的端口 `80`）。\r\n\r\n然后，浏览器会向后端发送一个 HTTP `OPTIONS` 请求，如果后端发送适当的 headers 来授权来自这个不同源（`http://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\r\n\r\n为此，后端必须有一个「允许的源」列表。\r\n\r\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。\r\n\r\n## 通配符\r\n\r\n也可以使用 `\"*\"",
           "score": 0.03278688524590164,
-          "rerank_score": 0.19934386014938354
+          "rerank_score": 0.20084072649478912
         },
         {
           "filename": "cors.md",
           "chunk_id": "a74e39d2-4f52-4d99-ad2d-7102eb748b9a",
           "text": "org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。默认为 `['GET']`。你可以使用 `['*']` 来允许所有标准方法。\r\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。`Accept`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。\r\n* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。\r\n* `expose_headers` - 指示可以被浏览器访问的响应头。默认为 `[]`。\r\n* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。\r\n\r\n中间件响应两种特定类型的 HTTP 请求……\r\n\r\n### CORS 预检请求\r\n\r\n这是些带有 `Origin` 和 `Access-Control-Request-Method` 请求头的 `OPTIONS` 请求。\r\n\r\n在这种情况下，中间件将拦截传入的请求并进行响应，出于提供信息的目的返回一个使用了适当的 CORS headers 的 `200` 或 `400` 响应。\r\n\r\n### 简单请求\r\n\r\n任何带有 `Origin` 请求头的请求。在这种情况下，中间件将像平常一样传递请求，但是在响应中",
           "score": 0.03128054740957967,
-          "rerank_score": 0.025152849033474922
+          "rerank_score": 0.025026386603713036
         },
         {
           "filename": "cors.md",
           "chunk_id": "8d83e532-2caa-4857-943f-6de56d09433c",
           "text": "from fastapi.middleware.cors import CORSMiddleware\r\n\r\napp = FastAPI()\r\n\r\norigins = [\r\n    \"http://localhost.tiangolo.com\",\r\n    \"https://localhost.tiangolo.com\",\r\n    \"http://localhost\",\r\n    \"http://localhost:8080\",\r\n]\r\n\r\napp.add_middleware(\r\n    CORSMiddleware,\r\n    allow_origins=origins,\r\n    allow_credentials=True,\r\n    allow_methods=[\"*\"],\r\n    allow_headers=[\"*\"],\r\n)\r\n\r\n\r\n@app.get(\"/\")\r\nasync def main():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\r\n\r\n支持以下参数：\r\n\r\n* `allow_origins` - 一个允许跨域请求的源列表。例如 `['https://example.org', 'https://www.example.org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。",
           "score": 0.029827662395050816,
-          "rerank_score": 0.024257833138108253
+          "rerank_score": 0.024544496089220047
         },
         {
           "filename": "testing.md",
           "chunk_id": "c21787e6-65ce-4507-9bb3-2264d04c1ba2",
           "text": "`\r\n\r\n...然后测试代码和之前一样的。\r\n\r\n## 测试：扩展示例\r\n\r\n现在让我们扩展这个例子，并添加更多细节，看下如何测试不同部分。\r\n\r\n### 扩展后的 **FastAPI** app 文件\r\n\r\n让我们继续之前的文件结构：\r\n\r\n```\r\n.\r\n├── app\r\n│   ├── __init__.py\r\n│   ├── main.py\r\n│   └── test_main.py\r\n```\r\n\r\n假设现在包含**FastAPI** app的文件 `main.py`  有些其他**路径操作**。\r\n\r\n有个 `GET` 操作会返回错误。\r\n\r\n有个 `POST` 操作会返回一些错误。\r\n\r\n所有*路径操作* 都需要一个`X-Token` 头。\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python\r\nfrom typing import Annotated\r\n\r\nfrom fastapi import FastAPI, Header, HTTPException\r\nfrom pydantic import BaseModel\r\n\r\nfake_secret_token = \"coneofsilence\"\r\n\r\nfake_db = {\r\n    \"foo\": {\"id\": \"foo\", \"title\": \"Foo\", \"description\": \"There goes my hero\"},\r\n    \"bar\": {\"id\": \"bar\", \"title\": \"Bar\", \"description\": \"The bartenders\"},\r\n}\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    id: str\r\n    title: str\r\n    description: str |",
           "score": 0.025833333333333333,
-          "rerank_score": 0.006899893283843994
+          "rerank_score": 0.006870132405310869
         },
         {
           "filename": "middleware.md",
           "chunk_id": "61a8ac8b-b9d7-42f4-9b36-b638fa0f67bd",
           "text": "est: Request, call_next):\r\n    start_time = time.perf_counter()\r\n    response = await call_next(request)\r\n    process_time = time.perf_counter() - start_time\r\n    response.headers[\"X-Process-Time\"] = str(process_time)\r\n    return response\r\n\r\n```\r\n\r\n## 其他中间件\r\n\r\n你可以稍后在 [Advanced User Guide: Advanced Middleware](../advanced/middleware.md){.internal-link target=_blank}阅读更多关于中间件的教程.\r\n\r\n你将在下一节中学习如何使用中间件处理 <abbr title=\"Cross-Origin Resource Sharing\">CORS</abbr> .",
           "score": 0.014084507042253521,
-          "rerank_score": 0.006057077087461948
+          "rerank_score": 0.005881940945982933
         }
       ],
-      "latency_ms": 2179.36
+      "latency_ms": 2365.24
     },
     {
       "case_id": "q038",
@@ -3250,7 +3250,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 15.1
+      "latency_ms": 12.12
     },
     {
       "case_id": "q038",
@@ -3297,7 +3297,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1054.25
+      "latency_ms": 1142.58
     },
     {
       "case_id": "q038",
@@ -3313,28 +3313,28 @@
           "chunk_id": "df055cc7-fffa-4dd0-bb36-90270c9b2208",
           "text": "p://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\r\n\r\n为此，后端必须有一个「允许的源」列表。\r\n\r\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。\r\n\r\n## 通配符\r\n\r\n也可以使用 `\"*\"`（一个「通配符」）声明这个列表，表示全部都是允许的。\r\n\r\n但这仅允许某些类型的通信，不包括所有涉及凭据的内容：像 Cookies 以及那些使用 Bearer 令牌的授权 headers 等。\r\n\r\n因此，为了一切都能正常工作，最好显式地指定允许的源。\r\n\r\n## 使用 `CORSMiddleware`\r\n\r\n你可以在 **FastAPI** 应用中使用 `CORSMiddleware` 来配置它。\r\n\r\n* 导入 `CORSMiddleware`。\r\n* 创建一个允许的源列表（由字符串组成）。\r\n* 将其作为「中间件」添加到你的 **FastAPI** 应用中。\r\n\r\n你也可以指定后端是否允许：\r\n\r\n* 凭证（授权 headers，Cookies 等）。\r\n* 特定的 HTTP 方法（`POST`，`PUT`）或者使用通配符 `\"*\"` 允许所有方法。\r\n* 特定的 HTTP headers 或者使用通配符 `\"*\"` 允许所有 headers。\r\n\r\n```Python hl_lines=\"2  6-11  13-19\"\r\nfrom fastapi import FastAPI\r\nfrom fastapi.middleware.cors import CORSMiddleware\r\n\r\napp = FastAPI()\r\n\r\norigins = [\r\n    \"http://localhost.tiangolo.com\",\r\n    \"https://localhost.t",
           "score": 0.032018442622950824,
-          "rerank_score": 0.22172090411186218
+          "rerank_score": 0.2200201004743576
         },
         {
           "filename": "cors.md",
           "chunk_id": "a74e39d2-4f52-4d99-ad2d-7102eb748b9a",
           "text": "org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。默认为 `['GET']`。你可以使用 `['*']` 来允许所有标准方法。\r\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。`Accept`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。\r\n* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。\r\n* `expose_headers` - 指示可以被浏览器访问的响应头。默认为 `[]`。\r\n* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。\r\n\r\n中间件响应两种特定类型的 HTTP 请求……\r\n\r\n### CORS 预检请求\r\n\r\n这是些带有 `Origin` 和 `Access-Control-Request-Method` 请求头的 `OPTIONS` 请求。\r\n\r\n在这种情况下，中间件将拦截传入的请求并进行响应，出于提供信息的目的返回一个使用了适当的 CORS headers 的 `200` 或 `400` 响应。\r\n\r\n### 简单请求\r\n\r\n任何带有 `Origin` 请求头的请求。在这种情况下，中间件将像平常一样传递请求，但是在响应中",
           "score": 0.03225806451612903,
-          "rerank_score": 0.19319415092468262
+          "rerank_score": 0.19257016479969025
         },
         {
           "filename": "cors.md",
           "chunk_id": "936dacf4-72c7-4290-ac56-149081edd52a",
           "text": "# CORS（跨域资源共享）\r\n\r\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\" class=\"external-link\" target=\"_blank\">CORS 或者「跨域资源共享」</a> 指浏览器中运行的前端拥有与后端通信的 JavaScript 代码，而后端处于与前端不同的「源」的情况。\r\n\r\n## 源\r\n\r\n源是协议（`http`，`https`）、域（`myapp.com`，`localhost`，`localhost.tiangolo.com`）以及端口（`80`、`443`、`8080`）的组合。\r\n\r\n因此，这些都是不同的源：\r\n\r\n* `http://localhost`\r\n* `https://localhost`\r\n* `http://localhost:8080`\r\n\r\n即使它们都在 `localhost` 中，但是它们使用不同的协议或者端口，所以它们都是不同的「源」。\r\n\r\n## 步骤\r\n\r\n假设你的浏览器中有一个前端运行在 `http://localhost:8080`，并且它的 JavaScript 正在尝试与运行在 `http://localhost` 的后端通信（因为我们没有指定端口，浏览器会采用默认的端口 `80`）。\r\n\r\n然后，浏览器会向后端发送一个 HTTP `OPTIONS` 请求，如果后端发送适当的 headers 来授权来自这个不同源（`http://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\r\n\r\n为此，后端必须有一个「允许的源」列表。\r\n\r\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。\r\n\r\n## 通配符\r\n\r\n也可以使用 `\"*\"",
           "score": 0.031746031746031744,
-          "rerank_score": 0.13952718675136566
+          "rerank_score": 0.14215892553329468
         },
         {
           "filename": "cors.md",
           "chunk_id": "8d83e532-2caa-4857-943f-6de56d09433c",
           "text": "from fastapi.middleware.cors import CORSMiddleware\r\n\r\napp = FastAPI()\r\n\r\norigins = [\r\n    \"http://localhost.tiangolo.com\",\r\n    \"https://localhost.tiangolo.com\",\r\n    \"http://localhost\",\r\n    \"http://localhost:8080\",\r\n]\r\n\r\napp.add_middleware(\r\n    CORSMiddleware,\r\n    allow_origins=origins,\r\n    allow_credentials=True,\r\n    allow_methods=[\"*\"],\r\n    allow_headers=[\"*\"],\r\n)\r\n\r\n\r\n@app.get(\"/\")\r\nasync def main():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\r\n\r\n支持以下参数：\r\n\r\n* `allow_origins` - 一个允许跨域请求的源列表。例如 `['https://example.org', 'https://www.example.org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。",
           "score": 0.03177805800756621,
-          "rerank_score": 0.021347230300307274
+          "rerank_score": 0.02166014537215233
         },
         {
           "filename": "request-forms.md",
@@ -3344,7 +3344,7 @@
           "rerank_score": 0.005396770313382149
         }
       ],
-      "latency_ms": 2430.46
+      "latency_ms": 2391.04
     },
     {
       "case_id": "q038",
@@ -3391,7 +3391,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 866.11
+      "latency_ms": 1746.42
     },
     {
       "case_id": "q039",
@@ -3399,7 +3399,7 @@
       "mode": "hybrid",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_mrr_at_5": 0.3333333333333333,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -3438,7 +3438,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 915.91
+      "latency_ms": 971.99
     },
     {
       "case_id": "q039",
@@ -3446,22 +3446,22 @@
       "mode": "rerank",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "cors.md",
           "chunk_id": "8d83e532-2caa-4857-943f-6de56d09433c",
           "text": "from fastapi.middleware.cors import CORSMiddleware\r\n\r\napp = FastAPI()\r\n\r\norigins = [\r\n    \"http://localhost.tiangolo.com\",\r\n    \"https://localhost.tiangolo.com\",\r\n    \"http://localhost\",\r\n    \"http://localhost:8080\",\r\n]\r\n\r\napp.add_middleware(\r\n    CORSMiddleware,\r\n    allow_origins=origins,\r\n    allow_credentials=True,\r\n    allow_methods=[\"*\"],\r\n    allow_headers=[\"*\"],\r\n)\r\n\r\n\r\n@app.get(\"/\")\r\nasync def main():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\r\n\r\n支持以下参数：\r\n\r\n* `allow_origins` - 一个允许跨域请求的源列表。例如 `['https://example.org', 'https://www.example.org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。",
           "score": 0.03200204813108039,
-          "rerank_score": 0.9731820225715637
+          "rerank_score": 0.9729655981063843
         },
         {
           "filename": "cors.md",
           "chunk_id": "df055cc7-fffa-4dd0-bb36-90270c9b2208",
           "text": "p://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\r\n\r\n为此，后端必须有一个「允许的源」列表。\r\n\r\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。\r\n\r\n## 通配符\r\n\r\n也可以使用 `\"*\"`（一个「通配符」）声明这个列表，表示全部都是允许的。\r\n\r\n但这仅允许某些类型的通信，不包括所有涉及凭据的内容：像 Cookies 以及那些使用 Bearer 令牌的授权 headers 等。\r\n\r\n因此，为了一切都能正常工作，最好显式地指定允许的源。\r\n\r\n## 使用 `CORSMiddleware`\r\n\r\n你可以在 **FastAPI** 应用中使用 `CORSMiddleware` 来配置它。\r\n\r\n* 导入 `CORSMiddleware`。\r\n* 创建一个允许的源列表（由字符串组成）。\r\n* 将其作为「中间件」添加到你的 **FastAPI** 应用中。\r\n\r\n你也可以指定后端是否允许：\r\n\r\n* 凭证（授权 headers，Cookies 等）。\r\n* 特定的 HTTP 方法（`POST`，`PUT`）或者使用通配符 `\"*\"` 允许所有方法。\r\n* 特定的 HTTP headers 或者使用通配符 `\"*\"` 允许所有 headers。\r\n\r\n```Python hl_lines=\"2  6-11  13-19\"\r\nfrom fastapi import FastAPI\r\nfrom fastapi.middleware.cors import CORSMiddleware\r\n\r\napp = FastAPI()\r\n\r\norigins = [\r\n    \"http://localhost.tiangolo.com\",\r\n    \"https://localhost.t",
           "score": 0.031024531024531024,
-          "rerank_score": 0.9331712126731873
+          "rerank_score": 0.9325584173202515
         },
         {
           "filename": "cors.md",
@@ -3475,17 +3475,17 @@
           "chunk_id": "3eacaad9-6782-4881-9630-a73041988b78",
           "text": "l_lines=\"8-9  11  14\"\r\nimport time\r\n\r\nfrom fastapi import FastAPI, Request\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.middleware(\"http\")\r\nasync def add_process_time_header(request: Request, call_next):\r\n    start_time = time.perf_counter()\r\n    response = await call_next(request)\r\n    process_time = time.perf_counter() - start_time\r\n    response.headers[\"X-Process-Time\"] = str(process_time)\r\n    return response\r\n\r\n```\r\n\r\n/// tip\r\n\r\n请记住可以 <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers\" class=\"external-link\" target=\"_blank\">用'X-' 前缀</a>添加专有自定义请求头.\r\n\r\n但是如果你想让浏览器中的客户端看到你的自定义请求头, 你需要把它们加到 CORS 配置 ([CORS (Cross-Origin Resource Sharing)](cors.md){.internal-link target=_blank}) 的 `expose_headers` 参数中,在 <a href=\"https://www.starlette.io/middleware/#corsmiddleware\" class=\"external-link\" target",
           "score": 0.02862400327131466,
-          "rerank_score": 0.8401542901992798
+          "rerank_score": 0.8394709229469299
         },
         {
           "filename": "middleware.md",
           "chunk_id": "9453cfbf-7169-4ef4-a318-76937e2ae019",
           "text": "# 中间件\r\n\r\n你可以向 **FastAPI** 应用添加中间件.\r\n\r\n\"中间件\"是一个函数,它在每个**请求**被特定的*路径操作*处理之前,以及在每个**响应**返回之前工作.\r\n\r\n* 它接收你的应用程序的每一个**请求**.\r\n* 然后它可以对这个**请求**做一些事情或者执行任何需要的代码.\r\n* 然后它将**请求**传递给应用程序的其他部分 (通过某种*路径操作*).\r\n* 然后它获取应用程序生产的**响应** (通过某种*路径操作*).\r\n* 它可以对该**响应**做些什么或者执行任何需要的代码.\r\n* 然后它返回这个 **响应**.\r\n\r\n/// note | \"技术细节\"\r\n\r\n如果你使用了 `yield` 关键字依赖, 依赖中的退出代码将在执行中间件*后*执行.\r\n\r\n如果有任何后台任务(稍后记录), 它们将在执行中间件*后*运行.\r\n\r\n///\r\n\r\n## 创建中间件\r\n\r\n要创建中间件你可以在函数的顶部使用装饰器 `@app.middleware(\"http\")`.\r\n\r\n中间件参数接收如下参数:\r\n\r\n* `request`.\r\n* 一个函数 `call_next` 它将接收 `request` 作为参数.\r\n    * 这个函数将 `request` 传递给相应的 *路径操作*.\r\n    * 然后它将返回由相应的*路径操作*生成的 `response`.\r\n* 然后你可以在返回 `response` 前进一步修改它.\r\n\r\n```Python hl_lines=\"8-9  11  14\"\r\nimport time\r\n\r\nfrom fastapi import FastAPI, Request\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.middleware(\"http\")\r\nasync def add_process_time",
           "score": 0.03252247488101534,
-          "rerank_score": 0.805283784866333
+          "rerank_score": 0.8027259111404419
         }
       ],
-      "latency_ms": 1996.39
+      "latency_ms": 2887.26
     },
     {
       "case_id": "q039",
@@ -3493,7 +3493,7 @@
       "mode": "vector",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_mrr_at_5": 0.3333333333333333,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -3532,15 +3532,15 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1027.91
+      "latency_ms": 1084.55
     },
     {
       "case_id": "q039",
       "question": "FastAPI 使用什么中间件配置跨域？",
       "mode": "bm25",
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.3333333333333333,
+      "evidence_hit_at_5": 0,
+      "evidence_mrr_at_5": 0,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -3579,7 +3579,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 16.22
+      "latency_ms": 13.32
     },
     {
       "case_id": "q040",
@@ -3587,46 +3587,46 @@
       "mode": "rerank",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.3333333333333333,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "cors.md",
           "chunk_id": "a74e39d2-4f52-4d99-ad2d-7102eb748b9a",
           "text": "org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。默认为 `['GET']`。你可以使用 `['*']` 来允许所有标准方法。\r\n* `allow_headers` - 一个允许跨域请求的 HTTP 请求头列表。默认为 `[]`。你可以使用 `['*']` 允许所有的请求头。`Accept`、`Accept-Language`、`Content-Language` 以及 `Content-Type` 请求头总是允许 CORS 请求。\r\n* `allow_credentials` - 指示跨域请求支持 cookies。默认是 `False`。另外，允许凭证时 `allow_origins` 不能设定为 `['*']`，必须指定源。\r\n* `expose_headers` - 指示可以被浏览器访问的响应头。默认为 `[]`。\r\n* `max_age` - 设定浏览器缓存 CORS 响应的最长时间，单位是秒。默认为 `600`。\r\n\r\n中间件响应两种特定类型的 HTTP 请求……\r\n\r\n### CORS 预检请求\r\n\r\n这是些带有 `Origin` 和 `Access-Control-Request-Method` 请求头的 `OPTIONS` 请求。\r\n\r\n在这种情况下，中间件将拦截传入的请求并进行响应，出于提供信息的目的返回一个使用了适当的 CORS headers 的 `200` 或 `400` 响应。\r\n\r\n### 简单请求\r\n\r\n任何带有 `Origin` 请求头的请求。在这种情况下，中间件将像平常一样传递请求，但是在响应中",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9184425473213196
+          "rerank_score": 0.9180991649627686
         },
         {
           "filename": "cors.md",
           "chunk_id": "8d83e532-2caa-4857-943f-6de56d09433c",
           "text": "from fastapi.middleware.cors import CORSMiddleware\r\n\r\napp = FastAPI()\r\n\r\norigins = [\r\n    \"http://localhost.tiangolo.com\",\r\n    \"https://localhost.tiangolo.com\",\r\n    \"http://localhost\",\r\n    \"http://localhost:8080\",\r\n]\r\n\r\napp.add_middleware(\r\n    CORSMiddleware,\r\n    allow_origins=origins,\r\n    allow_credentials=True,\r\n    allow_methods=[\"*\"],\r\n    allow_headers=[\"*\"],\r\n)\r\n\r\n\r\n@app.get(\"/\")\r\nasync def main():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n默认情况下，这个 `CORSMiddleware` 实现所使用的默认参数较为保守，所以你需要显式地启用特定的源、方法或者 headers，以便浏览器能够在跨域上下文中使用它们。\r\n\r\n支持以下参数：\r\n\r\n* `allow_origins` - 一个允许跨域请求的源列表。例如 `['https://example.org', 'https://www.example.org']`。你可以使用 `['*']` 允许任何源。\r\n* `allow_origin_regex` - 一个正则表达式字符串，匹配的源允许跨域请求。例如 `'https://.*\\.example\\.org'`。\r\n* `allow_methods` - 一个允许跨域请求的 HTTP 方法列表。",
           "score": 0.0315136476426799,
-          "rerank_score": 0.771240770816803
+          "rerank_score": 0.7715246677398682
         },
         {
           "filename": "cors.md",
           "chunk_id": "936dacf4-72c7-4290-ac56-149081edd52a",
           "text": "# CORS（跨域资源共享）\r\n\r\n<a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\" class=\"external-link\" target=\"_blank\">CORS 或者「跨域资源共享」</a> 指浏览器中运行的前端拥有与后端通信的 JavaScript 代码，而后端处于与前端不同的「源」的情况。\r\n\r\n## 源\r\n\r\n源是协议（`http`，`https`）、域（`myapp.com`，`localhost`，`localhost.tiangolo.com`）以及端口（`80`、`443`、`8080`）的组合。\r\n\r\n因此，这些都是不同的源：\r\n\r\n* `http://localhost`\r\n* `https://localhost`\r\n* `http://localhost:8080`\r\n\r\n即使它们都在 `localhost` 中，但是它们使用不同的协议或者端口，所以它们都是不同的「源」。\r\n\r\n## 步骤\r\n\r\n假设你的浏览器中有一个前端运行在 `http://localhost:8080`，并且它的 JavaScript 正在尝试与运行在 `http://localhost` 的后端通信（因为我们没有指定端口，浏览器会采用默认的端口 `80`）。\r\n\r\n然后，浏览器会向后端发送一个 HTTP `OPTIONS` 请求，如果后端发送适当的 headers 来授权来自这个不同源（`http://localhost:8080`）的通信，浏览器将允许前端的 JavaScript 向后端发送请求。\r\n\r\n为此，后端必须有一个「允许的源」列表。\r\n\r\n在这种情况下，它必须包含 `http://localhost:8080`，前端才能正常工作。\r\n\r\n## 通配符\r\n\r\n也可以使用 `\"*\"",
           "score": 0.03200204813108039,
-          "rerank_score": 0.6087701320648193
+          "rerank_score": 0.6094033718109131
         },
         {
           "filename": "cors.md",
           "chunk_id": "296593d6-4b53-4a30-9f39-95abf615b64d",
           "text": "S` 请求。\r\n\r\n在这种情况下，中间件将拦截传入的请求并进行响应，出于提供信息的目的返回一个使用了适当的 CORS headers 的 `200` 或 `400` 响应。\r\n\r\n### 简单请求\r\n\r\n任何带有 `Origin` 请求头的请求。在这种情况下，中间件将像平常一样传递请求，但是在响应中包含适当的 CORS headers。\r\n\r\n## 更多信息\r\n\r\n更多关于 <abbr title=\"Cross-Origin Resource Sharing\">CORS</abbr> 的信息，请查看 <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS\" class=\"external-link\" target=\"_blank\">Mozilla CORS 文档</a>。\r\n\r\n/// note | \"技术细节\"\r\n\r\n你也可以使用 `from starlette.middleware.cors import CORSMiddleware`。\r\n\r\n出于方便，**FastAPI** 在 `fastapi.middleware` 中为开发者提供了几个中间件。但是大多数可用的中间件都是直接来自 Starlette。\r\n\r\n///",
           "score": 0.027443609022556388,
-          "rerank_score": 0.13954904675483704
+          "rerank_score": 0.14188818633556366
         },
         {
           "filename": "middleware.md",
           "chunk_id": "3eacaad9-6782-4881-9630-a73041988b78",
           "text": "l_lines=\"8-9  11  14\"\r\nimport time\r\n\r\nfrom fastapi import FastAPI, Request\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.middleware(\"http\")\r\nasync def add_process_time_header(request: Request, call_next):\r\n    start_time = time.perf_counter()\r\n    response = await call_next(request)\r\n    process_time = time.perf_counter() - start_time\r\n    response.headers[\"X-Process-Time\"] = str(process_time)\r\n    return response\r\n\r\n```\r\n\r\n/// tip\r\n\r\n请记住可以 <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers\" class=\"external-link\" target=\"_blank\">用'X-' 前缀</a>添加专有自定义请求头.\r\n\r\n但是如果你想让浏览器中的客户端看到你的自定义请求头, 你需要把它们加到 CORS 配置 ([CORS (Cross-Origin Resource Sharing)](cors.md){.internal-link target=_blank}) 的 `expose_headers` 参数中,在 <a href=\"https://www.starlette.io/middleware/#corsmiddleware\" class=\"external-link\" target",
           "score": 0.03007688828584351,
-          "rerank_score": 0.07919349521398544
+          "rerank_score": 0.08076849579811096
         }
       ],
-      "latency_ms": 2132.48
+      "latency_ms": 2391.95
     },
     {
       "case_id": "q040",
@@ -3634,8 +3634,8 @@
       "mode": "vector",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "cors.md",
@@ -3673,7 +3673,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 888.98
+      "latency_ms": 967.91
     },
     {
       "case_id": "q040",
@@ -3681,8 +3681,8 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.3333333333333333,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "cors.md",
@@ -3720,7 +3720,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.25
+      "latency_ms": 12.08
     },
     {
       "case_id": "q040",
@@ -3728,8 +3728,8 @@
       "mode": "hybrid",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "cors.md",
@@ -3767,7 +3767,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 934.31
+      "latency_ms": 911.71
     },
     {
       "case_id": "q045",
@@ -3814,7 +3814,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 962.77
+      "latency_ms": 913.22
     },
     {
       "case_id": "q045",
@@ -3861,7 +3861,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.17
+      "latency_ms": 12.4
     },
     {
       "case_id": "q045",
@@ -3908,7 +3908,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 911.92
+      "latency_ms": 982.3
     },
     {
       "case_id": "q045",
@@ -3924,38 +3924,38 @@
           "chunk_id": "1249c6b5-aa87-4ad4-a2fe-a74ea828600c",
           "text": "# 后台任务\r\n\r\n你可以定义在返回响应后运行的后台任务。\r\n\r\n这对需要在请求之后执行的操作很有用，但客户端不必在接收响应之前等待操作完成。\r\n\r\n包括这些例子：\r\n\r\n* 执行操作后发送的电子邮件通知：\r\n    * 由于连接到电子邮件服务器并发送电子邮件往往很“慢”（几秒钟），您可以立即返回响应并在后台发送电子邮件通知。\r\n* 处理数据：\r\n    * 例如，假设您收到的文件必须经过一个缓慢的过程，您可以返回一个\"Accepted\"(HTTP 202)响应并在后台处理它。\r\n\r\n## 使用 `BackgroundTasks`\r\n\r\n首先导入 `BackgroundTasks` 并在 *路径操作函数* 中使用类型声明 `BackgroundTasks` 定义一个参数：\r\n\r\n```Python hl_lines=\"1  13\"\r\nfrom fastapi import BackgroundTasks, FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_notification(email: str, message=\"\"):\r\n    with open(\"log.txt\", mode=\"w\") as email_file:\r\n        content = f\"notification for {email}: {message}\"\r\n        email_file.write(content)\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(email: str, background_tasks: BackgroundTasks):\r\n    background_tasks.add_task(write_notifica",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9923359751701355
+          "rerank_score": 0.992337167263031
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "80f792c5-5744-4044-9a49-c810e9690e10",
           "text": "sync def send_notification(\r\n    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)\r\n):\r\n    message = f\"message to {email}\\n\"\r\n    background_tasks.add_task(write_log, message)\r\n    return {\"message\": \"Message sent\"}\r\n\r\n```\r\n\r\n////\r\n\r\n该示例中，信息会在响应发出 *之后* 被写到 `log.txt` 文件。\r\n\r\n如果请求中有查询，它将在后台任务中写入日志。\r\n\r\n然后另一个在 *路径操作函数* 生成的后台任务会使用路径参数 `email` 写入一条信息。\r\n\r\n## 技术细节\r\n\r\n`BackgroundTasks` 类直接来自 <a href=\"https://www.starlette.io/background/\" class=\"external-link\" target=\"_blank\">`starlette.background`</a>。\r\n\r\n它被直接导入/包含到FastAPI以便你可以从 `fastapi` 导入，并避免意外从 `starlette.background` 导入备用的 `BackgroundTask` (后面没有 `s`)。\r\n\r\n通过仅使用 `BackgroundTasks` (而不是 `BackgroundTask`)，使得能将它作为 *路径操作函数* 的参数 ，并让**FastAPI**为您处理其余部分, 就像直接使用 `Request` 对象。\r\n\r\n在FastAPI中仍然可以单独使用 `BackgroundTask`，但您必须在代码中创建对象，并返回包",
           "score": 0.0315136476426799,
-          "rerank_score": 0.9420615434646606
+          "rerank_score": 0.9427896738052368
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "80b5b764-71bc-4030-b762-65f87bed826b",
           "text": "作函数* 里，在依赖中(可依赖)，在子依赖中，等等。\r\n\r\n**FastAPI** 知道在每种情况下该做什么以及如何复用同一对象，因此所有后台任务被合并在一起并且随后在后台运行：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"13  15  22  25\"\r\nfrom typing import Annotated\r\n\r\nfrom fastapi import BackgroundTasks, Depends, FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_log(message: str):\r\n    with open(\"log.txt\", mode=\"a\") as log:\r\n        log.write(message)\r\n\r\n\r\ndef get_query(background_tasks: BackgroundTasks, q: str | None = None):\r\n    if q:\r\n        message = f\"found query: {q}\\n\"\r\n        background_tasks.add_task(write_log, message)\r\n    return q\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(\r\n    email: str, background_tasks: BackgroundTasks, q: Annotated[str, Depends(get_query)]\r\n):\r\n    message = f\"message to {email}\\n\"\r\n    background_tasks.add_",
           "score": 0.028782894736842105,
-          "rerank_score": 0.5887715220451355
+          "rerank_score": 0.591682493686676
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "c48c67d4-1c2b-4d1b-8611-9b52e7244403",
           "text": "asks` (而不是 `BackgroundTask`)，使得能将它作为 *路径操作函数* 的参数 ，并让**FastAPI**为您处理其余部分, 就像直接使用 `Request` 对象。\r\n\r\n在FastAPI中仍然可以单独使用 `BackgroundTask`，但您必须在代码中创建对象，并返回包含它的Starlette `Response`。\r\n\r\n更多细节查看 <a href=\"https://www.starlette.io/background/\" class=\"external-link\" target=\"_blank\">Starlette's official docs for Background Tasks</a>.\r\n\r\n## 告诫\r\n\r\n如果您需要执行繁重的后台计算，并且不一定需要由同一进程运行（例如，您不需要共享内存、变量等），那么使用其他更大的工具（如 <a href=\"https://docs.celeryq.dev\" class=\"external-link\" target=\"_blank\">Celery</a>）可能更好。\r\n\r\n它们往往需要更复杂的配置，即消息/作业队列管理器，如RabbitMQ或Redis，但它们允许您在多个进程中运行后台任务，甚至是在多个服务器中。\r\n\r\n要查看示例，查阅 [Project Generators](../project-generation.md){.internal-link target=_blank}，它们都包括已经配置的Celery。\r\n\r\n但是，如果您需要从同一个**FastAPI**应用程序访问变量和对象，或者您需要执行小型后台任务（如发送电子邮件通知），您只需使用 `BackgroundTasks` 即可。\r\n\r\n## 回顾\r\n\r\n导入并使用 `BackgroundTasks` 通过 *路径",
           "score": 0.031024531024531024,
-          "rerank_score": 0.43164828419685364
+          "rerank_score": 0.434800386428833
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "81053ccb-b400-4c48-8fa1-9ccb3f000f0f",
           "text": "h open(\"log.txt\", mode=\"w\") as email_file:\r\n        content = f\"notification for {email}: {message}\"\r\n        email_file.write(content)\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(email: str, background_tasks: BackgroundTasks):\r\n    background_tasks.add_task(write_notification, email, message=\"some notification\")\r\n    return {\"message\": \"Notification sent in the background\"}\r\n\r\n```\r\n\r\n`.add_task()` 接收以下参数：\r\n\r\n* 在后台运行的任务函数(`write_notification`)。\r\n* 应按顺序传递给任务函数的任意参数序列(`email`)。\r\n* 应传递给任务函数的任意关键字参数(`message=\"some notification\"`)。\r\n\r\n## 依赖注入\r\n\r\n使用 `BackgroundTasks` 也适用于依赖注入系统，你可以在多个级别声明 `BackgroundTasks` 类型的参数：在 *路径操作函数* 里，在依赖中(可依赖)，在子依赖中，等等。\r\n\r\n**FastAPI** 知道在每种情况下该做什么以及如何复用同一对象，因此所有后台任务被合并在一起并且随后在后台运行：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"13  15  22",
           "score": 0.031009615384615385,
-          "rerank_score": 0.29187503457069397
+          "rerank_score": 0.2879456877708435
         }
       ],
-      "latency_ms": 2109.94
+      "latency_ms": 2266.83
     },
     {
       "case_id": "q046",
@@ -4002,7 +4002,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 14.9
+      "latency_ms": 12.66
     },
     {
       "case_id": "q046",
@@ -4049,7 +4049,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 899.96
+      "latency_ms": 910.98
     },
     {
       "case_id": "q046",
@@ -4096,7 +4096,7 @@
           "rerank_score": 0.9030017256736755
         }
       ],
-      "latency_ms": 2039.56
+      "latency_ms": 2104.48
     },
     {
       "case_id": "q046",
@@ -4104,7 +4104,7 @@
       "mode": "vector",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_mrr_at_5": 0.3333333333333333,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -4143,7 +4143,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 899.48
+      "latency_ms": 953.73
     },
     {
       "case_id": "q047",
@@ -4190,7 +4190,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 889.97
+      "latency_ms": 904.4
     },
     {
       "case_id": "q047",
@@ -4206,38 +4206,38 @@
           "chunk_id": "c48c67d4-1c2b-4d1b-8611-9b52e7244403",
           "text": "asks` (而不是 `BackgroundTask`)，使得能将它作为 *路径操作函数* 的参数 ，并让**FastAPI**为您处理其余部分, 就像直接使用 `Request` 对象。\r\n\r\n在FastAPI中仍然可以单独使用 `BackgroundTask`，但您必须在代码中创建对象，并返回包含它的Starlette `Response`。\r\n\r\n更多细节查看 <a href=\"https://www.starlette.io/background/\" class=\"external-link\" target=\"_blank\">Starlette's official docs for Background Tasks</a>.\r\n\r\n## 告诫\r\n\r\n如果您需要执行繁重的后台计算，并且不一定需要由同一进程运行（例如，您不需要共享内存、变量等），那么使用其他更大的工具（如 <a href=\"https://docs.celeryq.dev\" class=\"external-link\" target=\"_blank\">Celery</a>）可能更好。\r\n\r\n它们往往需要更复杂的配置，即消息/作业队列管理器，如RabbitMQ或Redis，但它们允许您在多个进程中运行后台任务，甚至是在多个服务器中。\r\n\r\n要查看示例，查阅 [Project Generators](../project-generation.md){.internal-link target=_blank}，它们都包括已经配置的Celery。\r\n\r\n但是，如果您需要从同一个**FastAPI**应用程序访问变量和对象，或者您需要执行小型后台任务（如发送电子邮件通知），您只需使用 `BackgroundTasks` 即可。\r\n\r\n## 回顾\r\n\r\n导入并使用 `BackgroundTasks` 通过 *路径",
           "score": 0.03252247488101534,
-          "rerank_score": 0.8379936218261719
+          "rerank_score": 0.8358562588691711
         },
         {
           "filename": "path-params.md",
           "chunk_id": "79786c38-315e-4e80-8c7f-0d4a8c641f83",
           "text": "括多种语言的代码生成工具。\r\n\r\n## Pydantic\r\n\r\nFastAPI 充分地利用了 <a href=\"https://docs.pydantic.dev/\" class=\"external-link\" target=\"_blank\">Pydantic</a> 的优势，用它在后台校验数据。众所周知，Pydantic 擅长的就是数据校验。\r\n\r\n同样，`str`、`float`、`bool` 以及很多复合数据类型都可以使用类型声明。\r\n\r\n下一章介绍详细内容。\r\n\r\n## 顺序很重要\r\n\r\n有时，*路径操作*中的路径是写死的。\r\n\r\n比如要使用 `/users/me` 获取当前用户的数据。\r\n\r\n然后还要使用 `/users/{user_id}`，通过用户 ID 获取指定用户的数据。\r\n\r\n由于*路径操作*是按顺序依次运行的，因此，一定要在 `/users/{user_id}` 之前声明 `/users/me` ：\r\n\r\n```Python hl_lines=\"6  11\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/users/me\")\r\nasync def read_user_me():\r\n    return {\"user_id\": \"the current user\"}\r\n\r\n\r\n@app.get(\"/users/{user_id}\")\r\nasync def read_user(user_id: str):\r\n    return {\"user_id\": user_id}\r\n\r\n```\r\n\r\n否则，`/users/{user_id}` 将匹配 `/users/me`，FastAPI 会**认为**正在接收值为 `\"me\"` 的 `user_id` 参数。\r\n\r\n## 预设值",
           "score": 0.027745885954841176,
-          "rerank_score": 0.007179311476647854
+          "rerank_score": 0.007159024942666292
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "80b5b764-71bc-4030-b762-65f87bed826b",
           "text": "作函数* 里，在依赖中(可依赖)，在子依赖中，等等。\r\n\r\n**FastAPI** 知道在每种情况下该做什么以及如何复用同一对象，因此所有后台任务被合并在一起并且随后在后台运行：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"13  15  22  25\"\r\nfrom typing import Annotated\r\n\r\nfrom fastapi import BackgroundTasks, Depends, FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_log(message: str):\r\n    with open(\"log.txt\", mode=\"a\") as log:\r\n        log.write(message)\r\n\r\n\r\ndef get_query(background_tasks: BackgroundTasks, q: str | None = None):\r\n    if q:\r\n        message = f\"found query: {q}\\n\"\r\n        background_tasks.add_task(write_log, message)\r\n    return q\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(\r\n    email: str, background_tasks: BackgroundTasks, q: Annotated[str, Depends(get_query)]\r\n):\r\n    message = f\"message to {email}\\n\"\r\n    background_tasks.add_",
           "score": 0.030776515151515152,
-          "rerank_score": 0.007093929685652256
+          "rerank_score": 0.0069186934269964695
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "81053ccb-b400-4c48-8fa1-9ccb3f000f0f",
           "text": "h open(\"log.txt\", mode=\"w\") as email_file:\r\n        content = f\"notification for {email}: {message}\"\r\n        email_file.write(content)\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(email: str, background_tasks: BackgroundTasks):\r\n    background_tasks.add_task(write_notification, email, message=\"some notification\")\r\n    return {\"message\": \"Notification sent in the background\"}\r\n\r\n```\r\n\r\n`.add_task()` 接收以下参数：\r\n\r\n* 在后台运行的任务函数(`write_notification`)。\r\n* 应按顺序传递给任务函数的任意参数序列(`email`)。\r\n* 应传递给任务函数的任意关键字参数(`message=\"some notification\"`)。\r\n\r\n## 依赖注入\r\n\r\n使用 `BackgroundTasks` 也适用于依赖注入系统，你可以在多个级别声明 `BackgroundTasks` 类型的参数：在 *路径操作函数* 里，在依赖中(可依赖)，在子依赖中，等等。\r\n\r\n**FastAPI** 知道在每种情况下该做什么以及如何复用同一对象，因此所有后台任务被合并在一起并且随后在后台运行：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"13  15  22",
           "score": 0.028949545078577336,
-          "rerank_score": 0.006233302876353264
+          "rerank_score": 0.0062700598500669
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "ecfcd538-73eb-43f8-955d-e6c6eba70f3e",
           "text": "们都包括已经配置的Celery。\r\n\r\n但是，如果您需要从同一个**FastAPI**应用程序访问变量和对象，或者您需要执行小型后台任务（如发送电子邮件通知），您只需使用 `BackgroundTasks` 即可。\r\n\r\n## 回顾\r\n\r\n导入并使用 `BackgroundTasks` 通过 *路径操作函数* 中的参数和依赖项来添加后台任务。",
           "score": 0.03177805800756621,
-          "rerank_score": 0.001834366237744689
+          "rerank_score": 0.0018930581863969564
         }
       ],
-      "latency_ms": 2118.28
+      "latency_ms": 2058.98
     },
     {
       "case_id": "q047",
@@ -4245,8 +4245,8 @@
       "mode": "vector",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "background-tasks.md",
@@ -4284,7 +4284,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 943.32
+      "latency_ms": 960.02
     },
     {
       "case_id": "q047",
@@ -4331,7 +4331,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 16.83
+      "latency_ms": 12.73
     },
     {
       "case_id": "q048",
@@ -4339,7 +4339,7 @@
       "mode": "rerank",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 0.5,
+      "evidence_mrr_at_5": 0.3333333333333333,
       "top1_evidence_hit": 0,
       "hits": [
         {
@@ -4347,38 +4347,38 @@
           "chunk_id": "37670538-81c9-4569-a725-80b9e0d17877",
           "text": "send-notification/{email}\")\r\nasync def send_notification(email: str, background_tasks: BackgroundTasks):\r\n    background_tasks.add_task(write_notification, email, message=\"some notification\")\r\n    return {\"message\": \"Notification sent in the background\"}\r\n\r\n```\r\n\r\n**FastAPI** 会创建一个 `BackgroundTasks` 类型的对象并作为该参数传入。\r\n\r\n## 创建一个任务函数\r\n\r\n创建要作为后台任务运行的函数。\r\n\r\n它只是一个可以接收参数的标准函数。\r\n\r\n它可以是 `async def` 或普通的 `def` 函数，**FastAPI** 知道如何正确处理。\r\n\r\n在这种情况下，任务函数将写入一个文件（模拟发送电子邮件）。\r\n\r\n由于写操作不使用 `async` 和 `await`，我们用普通的 `def` 定义函数：\r\n\r\n```Python hl_lines=\"6-9\"\r\nfrom fastapi import BackgroundTasks, FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_notification(email: str, message=\"\"):\r\n    with open(\"log.txt\", mode=\"w\") as email_file:\r\n        content = f\"notification for {email}: {message}\"\r\n        email_file.write(content)",
           "score": 0.03128054740957967,
-          "rerank_score": 0.07866287231445312
-        },
-        {
-          "filename": "background-tasks.md",
-          "chunk_id": "c48c67d4-1c2b-4d1b-8611-9b52e7244403",
-          "text": "asks` (而不是 `BackgroundTask`)，使得能将它作为 *路径操作函数* 的参数 ，并让**FastAPI**为您处理其余部分, 就像直接使用 `Request` 对象。\r\n\r\n在FastAPI中仍然可以单独使用 `BackgroundTask`，但您必须在代码中创建对象，并返回包含它的Starlette `Response`。\r\n\r\n更多细节查看 <a href=\"https://www.starlette.io/background/\" class=\"external-link\" target=\"_blank\">Starlette's official docs for Background Tasks</a>.\r\n\r\n## 告诫\r\n\r\n如果您需要执行繁重的后台计算，并且不一定需要由同一进程运行（例如，您不需要共享内存、变量等），那么使用其他更大的工具（如 <a href=\"https://docs.celeryq.dev\" class=\"external-link\" target=\"_blank\">Celery</a>）可能更好。\r\n\r\n它们往往需要更复杂的配置，即消息/作业队列管理器，如RabbitMQ或Redis，但它们允许您在多个进程中运行后台任务，甚至是在多个服务器中。\r\n\r\n要查看示例，查阅 [Project Generators](../project-generation.md){.internal-link target=_blank}，它们都包括已经配置的Celery。\r\n\r\n但是，如果您需要从同一个**FastAPI**应用程序访问变量和对象，或者您需要执行小型后台任务（如发送电子邮件通知），您只需使用 `BackgroundTasks` 即可。\r\n\r\n## 回顾\r\n\r\n导入并使用 `BackgroundTasks` 通过 *路径",
-          "score": 0.029116045245077504,
-          "rerank_score": 0.061191968619823456
+          "rerank_score": 0.07766583561897278
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "1e8c3b50-d2b8-4308-b6cc-86db2b379699",
           "text": "log, message)\r\n    return {\"message\": \"Message sent\"}\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+ 没Annotated\r\n\r\n/// tip\r\n\r\n尽可能选择使用 `Annotated` 的版本。\r\n\r\n///\r\n\r\n```Python hl_lines=\"13  15  22  25\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import BackgroundTasks, Depends, FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_log(message: str):\r\n    with open(\"log.txt\", mode=\"a\") as log:\r\n        log.write(message)\r\n\r\n\r\ndef get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):\r\n    if q:\r\n        message = f\"found query: {q}\\n\"\r\n        background_tasks.add_task(write_log, message)\r\n    return q\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(\r\n    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)\r\n):\r\n    message = f\"message to {email}\\n\"",
           "score": 0.015151515151515152,
-          "rerank_score": 0.060515981167554855
+          "rerank_score": 0.061445869505405426
+        },
+        {
+          "filename": "background-tasks.md",
+          "chunk_id": "c48c67d4-1c2b-4d1b-8611-9b52e7244403",
+          "text": "asks` (而不是 `BackgroundTask`)，使得能将它作为 *路径操作函数* 的参数 ，并让**FastAPI**为您处理其余部分, 就像直接使用 `Request` 对象。\r\n\r\n在FastAPI中仍然可以单独使用 `BackgroundTask`，但您必须在代码中创建对象，并返回包含它的Starlette `Response`。\r\n\r\n更多细节查看 <a href=\"https://www.starlette.io/background/\" class=\"external-link\" target=\"_blank\">Starlette's official docs for Background Tasks</a>.\r\n\r\n## 告诫\r\n\r\n如果您需要执行繁重的后台计算，并且不一定需要由同一进程运行（例如，您不需要共享内存、变量等），那么使用其他更大的工具（如 <a href=\"https://docs.celeryq.dev\" class=\"external-link\" target=\"_blank\">Celery</a>）可能更好。\r\n\r\n它们往往需要更复杂的配置，即消息/作业队列管理器，如RabbitMQ或Redis，但它们允许您在多个进程中运行后台任务，甚至是在多个服务器中。\r\n\r\n要查看示例，查阅 [Project Generators](../project-generation.md){.internal-link target=_blank}，它们都包括已经配置的Celery。\r\n\r\n但是，如果您需要从同一个**FastAPI**应用程序访问变量和对象，或者您需要执行小型后台任务（如发送电子邮件通知），您只需使用 `BackgroundTasks` 即可。\r\n\r\n## 回顾\r\n\r\n导入并使用 `BackgroundTasks` 通过 *路径",
+          "score": 0.029116045245077504,
+          "rerank_score": 0.060322050005197525
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "be67b420-4e6d-4b32-beed-c0d933ae1876",
           "text": "background_tasks.add_task(write_log, message)\r\n    return q\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(\r\n    email: str, background_tasks: BackgroundTasks, q: Annotated[str, Depends(get_query)]\r\n):\r\n    message = f\"message to {email}\\n\"\r\n    background_tasks.add_task(write_log, message)\r\n    return {\"message\": \"Message sent\"}\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"14  16  23  26\"\r\nfrom typing import Union\r\n\r\nfrom fastapi import BackgroundTasks, Depends, FastAPI\r\nfrom typing_extensions import Annotated\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_log(message: str):\r\n    with open(\"log.txt\", mode=\"a\") as log:\r\n        log.write(message)\r\n\r\n\r\ndef get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):\r\n    if q:\r\n        m",
           "score": 0.015384615384615385,
-          "rerank_score": 0.048901960253715515
+          "rerank_score": 0.04974052309989929
         },
         {
           "filename": "background-tasks.md",
           "chunk_id": "b19a53a2-1a43-4804-90a7-b131663ec761",
           "text": "```Python hl_lines=\"11  13  20  23\"\r\nfrom fastapi import BackgroundTasks, Depends, FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\ndef write_log(message: str):\r\n    with open(\"log.txt\", mode=\"a\") as log:\r\n        log.write(message)\r\n\r\n\r\ndef get_query(background_tasks: BackgroundTasks, q: str | None = None):\r\n    if q:\r\n        message = f\"found query: {q}\\n\"\r\n        background_tasks.add_task(write_log, message)\r\n    return q\r\n\r\n\r\n@app.post(\"/send-notification/{email}\")\r\nasync def send_notification(\r\n    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)\r\n):\r\n    message = f\"message to {email}\\n\"\r\n    background_tasks.add_task(write_log, message)\r\n    return {\"message\": \"Message sent\"}\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+ 没Annotated\r\n\r\n/// tip\r\n\r\n尽可能选择使用 `Annotated` 的版本。\r\n\r\n//",
           "score": 0.014705882352941176,
-          "rerank_score": 0.04013422131538391
+          "rerank_score": 0.041458502411842346
         }
       ],
-      "latency_ms": 2059.47
+      "latency_ms": 2134.67
     },
     {
       "case_id": "q048",
@@ -4425,7 +4425,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 890.18
+      "latency_ms": 1318.9
     },
     {
       "case_id": "q048",
@@ -4472,7 +4472,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 16.57
+      "latency_ms": 11.26
     },
     {
       "case_id": "q048",
@@ -4519,7 +4519,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 910.3
+      "latency_ms": 916.88
     },
     {
       "case_id": "q053",
@@ -4566,7 +4566,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 911.1
+      "latency_ms": 909.09
     },
     {
       "case_id": "q053",
@@ -4613,7 +4613,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 16.32
+      "latency_ms": 12.03
     },
     {
       "case_id": "q053",
@@ -4660,7 +4660,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 918.98
+      "latency_ms": 1011.88
     },
     {
       "case_id": "q053",
@@ -4676,14 +4676,14 @@
           "chunk_id": "6925adcc-8b5c-4a16-99cb-84c01b78ca82",
           "text": "# 静态文件\r\n\r\n您可以使用 `StaticFiles`从目录中自动提供静态文件。\r\n\r\n## 使用`StaticFiles`\r\n\r\n* 导入`StaticFiles`。\r\n* \"挂载\"(Mount) 一个 `StaticFiles()` 实例到一个指定路径。\r\n\r\n```Python hl_lines=\"2  6\"\r\nfrom fastapi import FastAPI\r\nfrom fastapi.staticfiles import StaticFiles\r\n\r\napp = FastAPI()\r\n\r\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\r\n\r\n```\r\n\r\n/// note | \"技术细节\"\r\n\r\n你也可以用 `from starlette.staticfiles import StaticFiles`。\r\n\r\n**FastAPI** 提供了和 `starlette.staticfiles` 相同的 `fastapi.staticfiles` ，只是为了方便你，开发者。但它确实来自Starlette。\r\n\r\n///\r\n\r\n### 什么是\"挂载\"(Mounting)\r\n\r\n\"挂载\" 表示在特定路径添加一个完全\"独立的\"应用，然后负责处理所有子路径。\r\n\r\n这与使用`APIRouter`不同，因为安装的应用程序是完全独立的。OpenAPI和来自你主应用的文档不会包含已挂载应用的任何东西等等。\r\n\r\n你可以在**高级用户指南**中了解更多。\r\n\r\n## 细节\r\n\r\n这个 \"子应用\" 会被 \"挂载\" 到第一个 `\"/static\"` 指向的子路径。因此，任何以`\"/static\"`开头的路径都会被它处理。\r\n\r\n `directory=\"static\"` 指向包含你的静态文件",
           "score": 0.03252247488101534,
-          "rerank_score": 0.9885246157646179
+          "rerank_score": 0.988664984703064
         },
         {
           "filename": "static-files.md",
           "chunk_id": "c595ce44-1868-4815-9183-e42de5b52e80",
           "text": "任何东西等等。\r\n\r\n你可以在**高级用户指南**中了解更多。\r\n\r\n## 细节\r\n\r\n这个 \"子应用\" 会被 \"挂载\" 到第一个 `\"/static\"` 指向的子路径。因此，任何以`\"/static\"`开头的路径都会被它处理。\r\n\r\n `directory=\"static\"` 指向包含你的静态文件的目录名字。\r\n\r\n`name=\"static\"` 提供了一个能被**FastAPI**内部使用的名字。\r\n\r\n所有这些参数可以不同于\"`static`\"，根据你应用的需要和具体细节调整它们。\r\n\r\n## 更多信息\r\n\r\n更多细节和选择查阅 <a href=\"https://www.starlette.io/staticfiles/\" class=\"external-link\" target=\"_blank\">Starlette's docs about Static Files</a>.",
           "score": 0.03252247488101534,
-          "rerank_score": 0.9502379894256592
+          "rerank_score": 0.9497908353805542
         },
         {
           "filename": "first-steps.md",
@@ -4707,7 +4707,7 @@
           "rerank_score": 0.6210222244262695
         }
       ],
-      "latency_ms": 2055.13
+      "latency_ms": 2629.31
     },
     {
       "case_id": "q054",
@@ -4754,7 +4754,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 14.74
+      "latency_ms": 21.18
     },
     {
       "case_id": "q054",
@@ -4801,7 +4801,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 899.97
+      "latency_ms": 1579.32
     },
     {
       "case_id": "q054",
@@ -4817,38 +4817,38 @@
           "chunk_id": "6925adcc-8b5c-4a16-99cb-84c01b78ca82",
           "text": "# 静态文件\r\n\r\n您可以使用 `StaticFiles`从目录中自动提供静态文件。\r\n\r\n## 使用`StaticFiles`\r\n\r\n* 导入`StaticFiles`。\r\n* \"挂载\"(Mount) 一个 `StaticFiles()` 实例到一个指定路径。\r\n\r\n```Python hl_lines=\"2  6\"\r\nfrom fastapi import FastAPI\r\nfrom fastapi.staticfiles import StaticFiles\r\n\r\napp = FastAPI()\r\n\r\napp.mount(\"/static\", StaticFiles(directory=\"static\"), name=\"static\")\r\n\r\n```\r\n\r\n/// note | \"技术细节\"\r\n\r\n你也可以用 `from starlette.staticfiles import StaticFiles`。\r\n\r\n**FastAPI** 提供了和 `starlette.staticfiles` 相同的 `fastapi.staticfiles` ，只是为了方便你，开发者。但它确实来自Starlette。\r\n\r\n///\r\n\r\n### 什么是\"挂载\"(Mounting)\r\n\r\n\"挂载\" 表示在特定路径添加一个完全\"独立的\"应用，然后负责处理所有子路径。\r\n\r\n这与使用`APIRouter`不同，因为安装的应用程序是完全独立的。OpenAPI和来自你主应用的文档不会包含已挂载应用的任何东西等等。\r\n\r\n你可以在**高级用户指南**中了解更多。\r\n\r\n## 细节\r\n\r\n这个 \"子应用\" 会被 \"挂载\" 到第一个 `\"/static\"` 指向的子路径。因此，任何以`\"/static\"`开头的路径都会被它处理。\r\n\r\n `directory=\"static\"` 指向包含你的静态文件",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9792509078979492
+          "rerank_score": 0.9787091612815857
         },
         {
           "filename": "static-files.md",
           "chunk_id": "c595ce44-1868-4815-9183-e42de5b52e80",
           "text": "任何东西等等。\r\n\r\n你可以在**高级用户指南**中了解更多。\r\n\r\n## 细节\r\n\r\n这个 \"子应用\" 会被 \"挂载\" 到第一个 `\"/static\"` 指向的子路径。因此，任何以`\"/static\"`开头的路径都会被它处理。\r\n\r\n `directory=\"static\"` 指向包含你的静态文件的目录名字。\r\n\r\n`name=\"static\"` 提供了一个能被**FastAPI**内部使用的名字。\r\n\r\n所有这些参数可以不同于\"`static`\"，根据你应用的需要和具体细节调整它们。\r\n\r\n## 更多信息\r\n\r\n更多细节和选择查阅 <a href=\"https://www.starlette.io/staticfiles/\" class=\"external-link\" target=\"_blank\">Starlette's docs about Static Files</a>.",
           "score": 0.03225806451612903,
-          "rerank_score": 0.4654060900211334
+          "rerank_score": 0.4726877510547638
         },
         {
           "filename": "request-files.md",
           "chunk_id": "3d56dcee-3124-467c-beda-b95fb7ca3955",
           "text": "/3/glossary.html#term-file-like-object\" class=\"external-link\" target=\"_blank\">file-like</a> `async` 接口；\r\n* 暴露的 Python <a href=\"https://docs.python.org/zh-cn/3/library/tempfile.html#tempfile.SpooledTemporaryFile\" class=\"external-link\" target=\"_blank\">`SpooledTemporaryFile`</a> 对象，可直接传递给其他预期「file-like」对象的库。\r\n\r\n### `UploadFile`\r\n\r\n`UploadFile` 的属性如下：\r\n\r\n* `filename`：上传文件名字符串（`str`），例如， `myimage.jpg`；\r\n* `content_type`：内容类型（MIME 类型 / 媒体类型）字符串（`str`），例如，`image/jpeg`；\r\n* `file`： <a href=\"https://docs.python.org/zh-cn/3/library/tempfile.html#tempfile.SpooledTemporaryFile\" class=\"external-link\" target=\"_blank\">`SpooledTemporaryFile`</a>（ <a href=\"https://docs.python.org/zh-cn/3/glossary.html#term-file-like-object\" class=\"external-link\" target=\"_blank\">file-like</a> 对象）。其实就是 Python文件，可直接传递给其他预期 `fi",
           "score": 0.015151515151515152,
-          "rerank_score": 0.0009505379130132496
+          "rerank_score": 0.0009646036778576672
         },
         {
           "filename": "request-files.md",
           "chunk_id": "3cc12374-0bc0-4c6f-ae53-17563acac136",
           "text": "eloper.mozilla.org/zh-CN/docs/Web/HTTP/Methods/POST\" class=\"external-link\" target=\"_blank\"><abbr title=\"Mozilla Developer Network\">MDN</abbr> Web 文档的 <code>POST </code></a> 小节。\r\n\r\n///\r\n\r\n/// warning | \"警告\"\r\n\r\n可在一个*路径操作*中声明多个 `File` 和 `Form` 参数，但不能同时声明要接收 JSON 的 `Body` 字段。因为此时请求体的编码是 `multipart/form-data`，不是 `application/json`。\r\n\r\n这不是 **FastAPI** 的问题，而是 HTTP 协议的规定。\r\n\r\n///\r\n\r\n## 可选文件上传\r\n\r\n您可以通过使用标准类型注解并将 None 作为默认值的方式将一个文件参数设为可选:\r\n\r\n//// tab | Python 3.9+\r\n\r\n```Python hl_lines=\"7  14\"\r\nfrom fastapi import FastAPI, File, UploadFile\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/files/\")\r\nasync def create_file(file: bytes | None = File(default=None)):\r\n    if not file:\r\n        return {\"message\": \"No file sent\"}\r\n    else:\r\n        return {\"file_size\": len(file)}\r\n\r\n\r\n@app.post(\"/uploadfile/\")\r\nasync def",
           "score": 0.015625,
-          "rerank_score": 0.0007644696743227541
+          "rerank_score": 0.0007823480991646647
         },
         {
           "filename": "request-files.md",
           "chunk_id": "37dc4cd8-c724-4ae0-bae1-a33fecf20f75",
           "text": "# 请求文件\r\n\r\n`File` 用于定义客户端的上传文件。\r\n\r\n/// info | \"说明\"\r\n\r\n因为上传文件以「表单数据」形式发送。\r\n\r\n所以接收上传文件，要预先安装 <a href=\"https://github.com/Kludex/python-multipart\" class=\"external-link\" target=\"_blank\">`python-multipart`</a>。\r\n\r\n例如： `pip install python-multipart`。\r\n\r\n///\r\n\r\n## 导入 `File`\r\n\r\n从 `fastapi` 导入 `File` 和 `UploadFile`：\r\n\r\n```Python hl_lines=\"1\"\r\nfrom fastapi import FastAPI, File, UploadFile\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.post(\"/files/\")\r\nasync def create_file(file: bytes = File()):\r\n    return {\"file_size\": len(file)}\r\n\r\n\r\n@app.post(\"/uploadfile/\")\r\nasync def create_upload_file(file: UploadFile):\r\n    return {\"filename\": file.filename}\r\n\r\n```\r\n\r\n## 定义 `File` 参数\r\n\r\n创建文件（`File`）参数的方式与 `Body` 和 `Form` 一样：\r\n\r\n```Python hl_lines=\"7\"\r\nfrom fastapi import FastAPI, File, UploadFile\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.p",
           "score": 0.028404512489927477,
-          "rerank_score": 0.0007264664163812995
+          "rerank_score": 0.0007242850260809064
         }
       ],
-      "latency_ms": 2077.45
+      "latency_ms": 2139.67
     },
     {
       "case_id": "q054",
@@ -4895,7 +4895,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 939.67
+      "latency_ms": 912.92
     },
     {
       "case_id": "q055",
@@ -4942,7 +4942,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1008.66
+      "latency_ms": 913.18
     },
     {
       "case_id": "q055",
@@ -4989,7 +4989,7 @@
           "rerank_score": 0.010037949308753014
         }
       ],
-      "latency_ms": 2073.61
+      "latency_ms": 2104.15
     },
     {
       "case_id": "q055",
@@ -5036,7 +5036,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 924.79
+      "latency_ms": 939.18
     },
     {
       "case_id": "q055",
@@ -5083,7 +5083,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 16.93
+      "latency_ms": 12.91
     },
     {
       "case_id": "q056",
@@ -5130,7 +5130,7 @@
           "rerank_score": 0.00739590497687459
         }
       ],
-      "latency_ms": 2097.99
+      "latency_ms": 2096.19
     },
     {
       "case_id": "q056",
@@ -5177,7 +5177,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 917.88
+      "latency_ms": 899.93
     },
     {
       "case_id": "q056",
@@ -5185,8 +5185,8 @@
       "mode": "bm25",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "static-files.md",
@@ -5224,7 +5224,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 16.82
+      "latency_ms": 12.63
     },
     {
       "case_id": "q056",
@@ -5271,7 +5271,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 894.4
+      "latency_ms": 961.7
     },
     {
       "case_id": "q061",
@@ -5318,7 +5318,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 894.99
+      "latency_ms": 900.25
     },
     {
       "case_id": "q061",
@@ -5365,7 +5365,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.28
+      "latency_ms": 11.23
     },
     {
       "case_id": "q061",
@@ -5412,7 +5412,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 1020.04
+      "latency_ms": 909.5
     },
     {
       "case_id": "q061",
@@ -5428,38 +5428,38 @@
           "chunk_id": "daae3d03-ae7b-402a-8ee8-7b84f8cf9d16",
           "text": "# JSON 兼容编码器\r\n\r\n在某些情况下，您可能需要将数据类型（如Pydantic模型）转换为与JSON兼容的数据类型（如`dict`、`list`等）。\r\n\r\n比如，如果您需要将其存储在数据库中。\r\n\r\n对于这种要求， **FastAPI**提供了`jsonable_encoder()`函数。\r\n\r\n## 使用`jsonable_encoder`\r\n\r\n让我们假设你有一个数据库名为`fake_db`，它只能接收与JSON兼容的数据。\r\n\r\n例如，它不接收`datetime`这类的对象，因为这些对象与JSON不兼容。\r\n\r\n因此，`datetime`对象必须将转换为包含<a href=\"https://en.wikipedia.org/wiki/ISO_8601\" class=\"external-link\" target=\"_blank\">ISO格式化</a>的`str`类型对象。\r\n\r\n同样，这个数据库也不会接收Pydantic模型（带有属性的对象），而只接收`dict`。\r\n\r\n对此你可以使用`jsonable_encoder`。\r\n\r\n它接收一个对象，比如Pydantic模型，并会返回一个JSON兼容的版本：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"4  21\"\r\nfrom datetime import datetime\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9972814321517944
+          "rerank_score": 0.9972925782203674
         },
         {
           "filename": "encoder.md",
           "chunk_id": "767fd5f0-1924-4a9c-94ab-9c4a98b96105",
           "text": "eModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: Union[str, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef update_item(id: str, item: Item):\r\n    json_compatible_item_data = jsonable_encoder(item)\r\n    fake_db[id] = json_compatible_item_data\r\n\r\n```\r\n\r\n////\r\n\r\n在这个例子中，它将Pydantic模型转换为`dict`，并将`datetime`转换为`str`。\r\n\r\n调用它的结果后就可以使用Python标准编码中的<a href=\"https://docs.python.org/3/library/json.html#json.dumps\" class=\"external-link\" target=\"_blank\">`json.dumps()`</a>。\r\n\r\n这个操作不会返回一个包含JSON格式（作为字符串）数据的庞大的`str`。它将返回一个Python标准数据结构（例如`dict`），其值和子值都与JSON兼容。\r\n\r\n/// note\r\n\r\n`jsonable_encoder`实际上是FastAPI内部用来转换数据的。但是它在许多其他场景中也很有用。\r\n\r\n///",
           "score": 0.03225806451612903,
-          "rerank_score": 0.9963350296020508
+          "rerank_score": 0.996299684047699
         },
         {
           "filename": "body.md",
           "chunk_id": "54f1ca0a-b994-4ab0-aef2-587a3f96b9d9",
           "text": "em):\r\n    return item\r\n\r\n```\r\n\r\n////\r\n\r\n……此处，请求体参数的类型为 `Item` 模型。\r\n\r\n## 结论\r\n\r\n仅使用 Python 类型声明，**FastAPI** 就可以：\r\n\r\n* 以 JSON 形式读取请求体\r\n* （在必要时）把请求体转换为对应的类型\r\n* 校验数据：\r\n    * 数据无效时返回错误信息，并指出错误数据的确切位置和内容\r\n* 把接收的数据赋值给参数 `item`\r\n    * 把函数中请求体参数的类型声明为 `Item`，还能获得代码补全等编辑器支持\r\n* 为模型生成 <a href=\"https://json-schema.org\" class=\"external-link\" target=\"_blank\">JSON Schema</a>，在项目中所需的位置使用\r\n* 这些概图是 OpenAPI 概图的部件，用于 API 文档 <abbr title=\"用户界面\">UI</abbr>\r\n\r\n## API 文档\r\n\r\nPydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文档中显示：\r\n\r\n<img src=\"/img/tutorial/body/image01.png\">\r\n\r\n而且，还会用于 API 文档中使用了概图的*路径操作*：\r\n\r\n<img src=\"/img/tutorial/body/image02.png\">\r\n\r\n## 编辑器支持\r\n\r\n在编辑器中，函数内部均可使用类型提示、代码补全（如果接收的不是 Pydantic 模型，而是**字典**，就没有这样的支持）：\r\n\r\n<img src=\"/img/tutorial/body/image03.png\">\r\n\r\n还支持检查错误的类型操作：\r\n\r\n<img src=\"/img/tutorial/body",
           "score": 0.03125763125763126,
-          "rerank_score": 0.9856925010681152
+          "rerank_score": 0.9856305718421936
         },
         {
           "filename": "first-steps.md",
           "chunk_id": "5760a713-638a-4cd5-81d7-6dc073780c21",
           "text": "(\"/\")\r\ndef root():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n/// note\r\n\r\n如果你不知道两者的区别，请查阅 [Async: *\"In a hurry?\"*](https://fastapi.tiangolo.com/async/#in-a-hurry){.internal-link target=_blank}。\r\n\r\n///\r\n\r\n### 步骤 5：返回内容\r\n\r\n```Python hl_lines=\"8\"\r\nfrom fastapi import FastAPI\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.get(\"/\")\r\nasync def root():\r\n    return {\"message\": \"Hello World\"}\r\n\r\n```\r\n\r\n你可以返回一个 `dict`、`list`，像 `str`、`int` 一样的单个值，等等。\r\n\r\n你还可以返回 Pydantic 模型（稍后你将了解更多）。\r\n\r\n还有许多其他将会自动转换为 JSON 的对象和模型（包括 ORM 对象等）。尝试下使用你最喜欢的一种，它很有可能已经被支持。\r\n\r\n## 总结\r\n\r\n* 导入 `FastAPI`。\r\n* 创建一个 `app` 实例。\r\n* 编写一个**路径操作装饰器**（如 `@app.get(\"/\")`）。\r\n* 编写一个**路径操作函数**（如上面的 `def root(): ...`）。\r\n* 运行开发服务器（如 `uvicorn main:app --reload`）。",
           "score": 0.0259915611814346,
-          "rerank_score": 0.9746492505073547
+          "rerank_score": 0.9749153852462769
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "54136677-5aa2-4fa6-9e67-ce765f7245f5",
           "text": "# 请求体 - 更新数据\r\n\r\n## 用 `PUT` 更新数据\r\n\r\n更新数据请用 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/PUT\" class=\"external-link\" target=\"_blank\">HTTP `PUT`</a> 操作。\r\n\r\n把输入数据转换为以 JSON 格式存储的数据（比如，使用 NoSQL 数据库时），可以使用 `jsonable_encoder`。例如，把 `datetime` 转换为 `str`。\r\n\r\n```Python hl_lines=\"30-35\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},\r\n    \"bar\": {\"name\": \"Bar\", \"description\": \"The bartenders\", \"price\": 62, \"tax\": 20.2},",
           "score": 0.027972027972027972,
-          "rerank_score": 0.9709124565124512
+          "rerank_score": 0.9710279107093811
         }
       ],
-      "latency_ms": 2100.81
+      "latency_ms": 2060.57
     },
     {
       "case_id": "q062",
@@ -5506,7 +5506,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 14.94
+      "latency_ms": 15.79
     },
     {
       "case_id": "q062",
@@ -5553,7 +5553,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 952.2
+      "latency_ms": 917.89
     },
     {
       "case_id": "q062",
@@ -5569,38 +5569,38 @@
           "chunk_id": "daae3d03-ae7b-402a-8ee8-7b84f8cf9d16",
           "text": "# JSON 兼容编码器\r\n\r\n在某些情况下，您可能需要将数据类型（如Pydantic模型）转换为与JSON兼容的数据类型（如`dict`、`list`等）。\r\n\r\n比如，如果您需要将其存储在数据库中。\r\n\r\n对于这种要求， **FastAPI**提供了`jsonable_encoder()`函数。\r\n\r\n## 使用`jsonable_encoder`\r\n\r\n让我们假设你有一个数据库名为`fake_db`，它只能接收与JSON兼容的数据。\r\n\r\n例如，它不接收`datetime`这类的对象，因为这些对象与JSON不兼容。\r\n\r\n因此，`datetime`对象必须将转换为包含<a href=\"https://en.wikipedia.org/wiki/ISO_8601\" class=\"external-link\" target=\"_blank\">ISO格式化</a>的`str`类型对象。\r\n\r\n同样，这个数据库也不会接收Pydantic模型（带有属性的对象），而只接收`dict`。\r\n\r\n对此你可以使用`jsonable_encoder`。\r\n\r\n它接收一个对象，比如Pydantic模型，并会返回一个JSON兼容的版本：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"4  21\"\r\nfrom datetime import datetime\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime",
           "score": 0.03278688524590164,
-          "rerank_score": 0.9388045072555542
+          "rerank_score": 0.9413361549377441
         },
         {
           "filename": "encoder.md",
           "chunk_id": "767fd5f0-1924-4a9c-94ab-9c4a98b96105",
           "text": "eModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: Union[str, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef update_item(id: str, item: Item):\r\n    json_compatible_item_data = jsonable_encoder(item)\r\n    fake_db[id] = json_compatible_item_data\r\n\r\n```\r\n\r\n////\r\n\r\n在这个例子中，它将Pydantic模型转换为`dict`，并将`datetime`转换为`str`。\r\n\r\n调用它的结果后就可以使用Python标准编码中的<a href=\"https://docs.python.org/3/library/json.html#json.dumps\" class=\"external-link\" target=\"_blank\">`json.dumps()`</a>。\r\n\r\n这个操作不会返回一个包含JSON格式（作为字符串）数据的庞大的`str`。它将返回一个Python标准数据结构（例如`dict`），其值和子值都与JSON兼容。\r\n\r\n/// note\r\n\r\n`jsonable_encoder`实际上是FastAPI内部用来转换数据的。但是它在许多其他场景中也很有用。\r\n\r\n///",
           "score": 0.03225806451612903,
-          "rerank_score": 0.8141567707061768
+          "rerank_score": 0.8117454051971436
         },
         {
           "filename": "encoder.md",
           "chunk_id": "15392282-1ac5-448d-92f4-f975cb09272d",
           "text": ".encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: str | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef update_item(id: str, item: Item):\r\n    json_compatible_item_data = jsonable_encoder(item)\r\n    fake_db[id] = json_compatible_item_data\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"5  22\"\r\nfrom datetime import datetime\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: Union[str, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef upd",
           "score": 0.015873015873015872,
-          "rerank_score": 0.3327043056488037
+          "rerank_score": 0.3337574601173401
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "54136677-5aa2-4fa6-9e67-ce765f7245f5",
           "text": "# 请求体 - 更新数据\r\n\r\n## 用 `PUT` 更新数据\r\n\r\n更新数据请用 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/PUT\" class=\"external-link\" target=\"_blank\">HTTP `PUT`</a> 操作。\r\n\r\n把输入数据转换为以 JSON 格式存储的数据（比如，使用 NoSQL 数据库时），可以使用 `jsonable_encoder`。例如，把 `datetime` 转换为 `str`。\r\n\r\n```Python hl_lines=\"30-35\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},\r\n    \"bar\": {\"name\": \"Bar\", \"description\": \"The bartenders\", \"price\": 62, \"tax\": 20.2},",
           "score": 0.03007688828584351,
-          "rerank_score": 0.31732985377311707
+          "rerank_score": 0.31617167592048645
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "43ed75c4-96a5-423e-9330-25224fead61a",
           "text": "PUT` （可选，也可以用 `PUT`）；\r\n* 提取存储的数据；\r\n* 把数据放入 Pydantic 模型；\r\n* 生成不含输入模型默认值的 `dict` （使用 `exclude_unset` 参数）；\r\n    * 只更新用户设置过的值，不用模型中的默认值覆盖已存储过的值。\r\n* 为已存储的模型创建副本，用接收的数据更新其属性 （使用 `update` 参数）。\r\n* 把模型副本转换为可存入数据库的形式（比如，使用 `jsonable_encoder`）。\r\n    * 这种方式与 Pydantic 模型的 `.dict()` 方法类似，但能确保把值转换为适配 JSON 的数据类型，例如， 把 `datetime` 转换为 `str` 。\r\n* 把数据保存至数据库；\r\n* 返回更新后的模型。\r\n\r\n```Python hl_lines=\"30-37\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},",
           "score": 0.014925373134328358,
-          "rerank_score": 0.18452250957489014
+          "rerank_score": 0.18109917640686035
         }
       ],
-      "latency_ms": 2057.71
+      "latency_ms": 2009.29
     },
     {
       "case_id": "q062",
@@ -5647,7 +5647,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 892.38
+      "latency_ms": 863.14
     },
     {
       "case_id": "q063",
@@ -5694,7 +5694,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 956.8
+      "latency_ms": 912.78
     },
     {
       "case_id": "q063",
@@ -5702,46 +5702,46 @@
       "mode": "rerank",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.25,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "encoder.md",
           "chunk_id": "15392282-1ac5-448d-92f4-f975cb09272d",
           "text": ".encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: str | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef update_item(id: str, item: Item):\r\n    json_compatible_item_data = jsonable_encoder(item)\r\n    fake_db[id] = json_compatible_item_data\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"5  22\"\r\nfrom datetime import datetime\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: Union[str, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef upd",
           "score": 0.015873015873015872,
-          "rerank_score": 0.9648169875144958
+          "rerank_score": 0.9635374546051025
         },
         {
           "filename": "handling-errors.md",
           "chunk_id": "95a0b918-e3cd-42f3-85e0-4367ea5dfebd",
           "text": "`fastapi.responses` 作为快捷方式，但大部分响应都可以直接从 Starlette 导入。\r\n\r\n///\r\n\r\n### 使用 `RequestValidationError` 的请求体\r\n\r\n`RequestValidationError` 包含其接收到的无效数据请求的 `body` 。\r\n\r\n开发时，可以用这个请求体生成日志、调试错误，并返回给用户。\r\n\r\n```Python hl_lines=\"14\"\r\nfrom fastapi import FastAPI, Request, status\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom fastapi.exceptions import RequestValidationError\r\nfrom fastapi.responses import JSONResponse\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.exception_handler(RequestValidationError)\r\nasync def validation_exception_handler(request: Request, exc: RequestValidationError):\r\n    return JSONResponse(\r\n        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,\r\n        content=jsonable_encoder({\"detail\": exc.errors(), \"body\": exc.body}),\r\n    )\r\n\r\n\r\nclass Item(BaseModel):",
           "score": 0.030886196246139225,
-          "rerank_score": 0.9631359577178955
+          "rerank_score": 0.9634751081466675
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "54136677-5aa2-4fa6-9e67-ce765f7245f5",
           "text": "# 请求体 - 更新数据\r\n\r\n## 用 `PUT` 更新数据\r\n\r\n更新数据请用 <a href=\"https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/PUT\" class=\"external-link\" target=\"_blank\">HTTP `PUT`</a> 操作。\r\n\r\n把输入数据转换为以 JSON 格式存储的数据（比如，使用 NoSQL 数据库时），可以使用 `jsonable_encoder`。例如，把 `datetime` 转换为 `str`。\r\n\r\n```Python hl_lines=\"30-35\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},\r\n    \"bar\": {\"name\": \"Bar\", \"description\": \"The bartenders\", \"price\": 62, \"tax\": 20.2},",
           "score": 0.025645240835114255,
-          "rerank_score": 0.9383515119552612
+          "rerank_score": 0.9394130110740662
         },
         {
           "filename": "encoder.md",
           "chunk_id": "daae3d03-ae7b-402a-8ee8-7b84f8cf9d16",
           "text": "# JSON 兼容编码器\r\n\r\n在某些情况下，您可能需要将数据类型（如Pydantic模型）转换为与JSON兼容的数据类型（如`dict`、`list`等）。\r\n\r\n比如，如果您需要将其存储在数据库中。\r\n\r\n对于这种要求， **FastAPI**提供了`jsonable_encoder()`函数。\r\n\r\n## 使用`jsonable_encoder`\r\n\r\n让我们假设你有一个数据库名为`fake_db`，它只能接收与JSON兼容的数据。\r\n\r\n例如，它不接收`datetime`这类的对象，因为这些对象与JSON不兼容。\r\n\r\n因此，`datetime`对象必须将转换为包含<a href=\"https://en.wikipedia.org/wiki/ISO_8601\" class=\"external-link\" target=\"_blank\">ISO格式化</a>的`str`类型对象。\r\n\r\n同样，这个数据库也不会接收Pydantic模型（带有属性的对象），而只接收`dict`。\r\n\r\n对此你可以使用`jsonable_encoder`。\r\n\r\n它接收一个对象，比如Pydantic模型，并会返回一个JSON兼容的版本：\r\n\r\n//// tab | Python 3.10+\r\n\r\n```Python hl_lines=\"4  21\"\r\nfrom datetime import datetime\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime",
           "score": 0.01639344262295082,
-          "rerank_score": 0.938346266746521
+          "rerank_score": 0.9382888078689575
         },
         {
           "filename": "body-updates.md",
           "chunk_id": "43ed75c4-96a5-423e-9330-25224fead61a",
           "text": "PUT` （可选，也可以用 `PUT`）；\r\n* 提取存储的数据；\r\n* 把数据放入 Pydantic 模型；\r\n* 生成不含输入模型默认值的 `dict` （使用 `exclude_unset` 参数）；\r\n    * 只更新用户设置过的值，不用模型中的默认值覆盖已存储过的值。\r\n* 为已存储的模型创建副本，用接收的数据更新其属性 （使用 `update` 参数）。\r\n* 把模型副本转换为可存入数据库的形式（比如，使用 `jsonable_encoder`）。\r\n    * 这种方式与 Pydantic 模型的 `.dict()` 方法类似，但能确保把值转换为适配 JSON 的数据类型，例如， 把 `datetime` 转换为 `str` 。\r\n* 把数据保存至数据库；\r\n* 返回更新后的模型。\r\n\r\n```Python hl_lines=\"30-37\"\r\nfrom typing import List, Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\napp = FastAPI()\r\n\r\n\r\nclass Item(BaseModel):\r\n    name: Union[str, None] = None\r\n    description: Union[str, None] = None\r\n    price: Union[float, None] = None\r\n    tax: float = 10.5\r\n    tags: List[str] = []\r\n\r\n\r\nitems = {\r\n    \"foo\": {\"name\": \"Foo\", \"price\": 50.2},",
           "score": 0.027884615384615386,
-          "rerank_score": 0.8767726421356201
+          "rerank_score": 0.8766515851020813
         }
       ],
-      "latency_ms": 1993.68
+      "latency_ms": 2073.39
     },
     {
       "case_id": "q063",
@@ -5788,7 +5788,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 911.39
+      "latency_ms": 960.72
     },
     {
       "case_id": "q063",
@@ -5835,7 +5835,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 15.26
+      "latency_ms": 11.12
     },
     {
       "case_id": "q064",
@@ -5872,7 +5872,7 @@
           "chunk_id": "15392282-1ac5-448d-92f4-f975cb09272d",
           "text": ".encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: str | None = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef update_item(id: str, item: Item):\r\n    json_compatible_item_data = jsonable_encoder(item)\r\n    fake_db[id] = json_compatible_item_data\r\n\r\n```\r\n\r\n////\r\n\r\n//// tab | Python 3.8+\r\n\r\n```Python hl_lines=\"5  22\"\r\nfrom datetime import datetime\r\nfrom typing import Union\r\n\r\nfrom fastapi import FastAPI\r\nfrom fastapi.encoders import jsonable_encoder\r\nfrom pydantic import BaseModel\r\n\r\nfake_db = {}\r\n\r\n\r\nclass Item(BaseModel):\r\n    title: str\r\n    timestamp: datetime\r\n    description: Union[str, None] = None\r\n\r\n\r\napp = FastAPI()\r\n\r\n\r\n@app.put(\"/items/{id}\")\r\ndef upd",
           "score": 0.015625,
-          "rerank_score": 0.5915879011154175
+          "rerank_score": 0.5932881832122803
         },
         {
           "filename": "path-params.md",
@@ -5882,7 +5882,7 @@
           "rerank_score": 0.3698236346244812
         }
       ],
-      "latency_ms": 2078.05
+      "latency_ms": 2347.5
     },
     {
       "case_id": "q064",
@@ -5890,8 +5890,8 @@
       "mode": "vector",
       "document_recall_at_5": 1.0,
       "evidence_hit_at_5": 1,
-      "evidence_mrr_at_5": 1.0,
-      "top1_evidence_hit": 1,
+      "evidence_mrr_at_5": 0.5,
+      "top1_evidence_hit": 0,
       "hits": [
         {
           "filename": "encoder.md",
@@ -5929,7 +5929,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 873.16
+      "latency_ms": 893.21
     },
     {
       "case_id": "q064",
@@ -5976,7 +5976,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 17.17
+      "latency_ms": 11.75
     },
     {
       "case_id": "q064",
@@ -6023,7 +6023,7 @@
           "rerank_score": null
         }
       ],
-      "latency_ms": 909.99
+      "latency_ms": 951.0
     }
   ],
   "answers": [
@@ -6034,9 +6034,9 @@
       "reference_answer": "自动解析为整数。",
       "human_review": "pending",
       "result": {
-        "trace_id": "41afb6bd-a6fb-4010-8ff6-7ccb54baf701",
-        "answer": "路径参数声明为 `int` 后，URL 中的字符串数字会被自动转换为 `int` 类型，并进行类型校验。\n\n- 路径参数本质上是 URL 的组成部分，类型本应是字符串；但声明 `int` 类型后，值会转换为声明的类型，并执行类型校验 [1][2]。\n- 与路径参数相关的流程包括**数据解析**和**数据校验**，这些同样适用于查询参数 [1]。\n- 因此，如果路径中传入的是合法数字字符串（如 `/items/123`），会得到整数值 `123`；如果传入的不是合法整数，则校验不通过。现有资料未说明校验失败时的具体响应形式 [1][2]。",
-        "refused": false,
+        "trace_id": "fb1bcbbc-129a-401c-9b55-406dbe718474",
+        "answer": "路径参数在 URL 中本质是字符串；当路径参数声明为 `int` 后，FastAPI 会将字符串数字转换为 `int` 类型，并进行类型校验 [1][2]。\n\n资料 [1] 指出，URL 中的值本应是字符串，但声明 Python 类型（如 `int`）后，这些值会转换为声明的类型并进行类型校验；同时，所有应用于路径参数的流程也适用于查询参数 [1]。资料 [2] 展示了把路径参数 `item_id` 声明为 `int` 的示例 [2]。\n\n因此，如果路径参数是字符串数字（例如 `\"123\"`），它会被解析为整数 `123` [1][2]。如果字符串不是合法数字，资料未明确说明具体错误响应，现有资料不足以回答该错误情况。",
+        "refused": true,
         "sources": [
           {
             "id": "0293afb7-0e3c-44e5-a907-202833ccdf9d",
@@ -6048,7 +6048,7 @@
             "score": 0.03278688524590164,
             "vector_score": 0.6596477722806089,
             "bm25_score": 39.98159717756887,
-            "rerank_score": 0.8737086653709412,
+            "rerank_score": 0.8728863596916199,
             "citation": 1,
             "cited": true
           },
@@ -6062,7 +6062,7 @@
             "score": 0.03200204813108039,
             "vector_score": 0.6402909100243686,
             "bm25_score": 37.915905668564704,
-            "rerank_score": 0.4474506974220276,
+            "rerank_score": 0.44297847151756287,
             "citation": 2,
             "cited": true
           },
@@ -6111,19 +6111,19 @@
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 18375,
+        "latency_ms": 17015,
         "usage": {
           "prompt_tokens": 1993,
-          "completion_tokens": 1318,
-          "total_tokens": 3311,
+          "completion_tokens": 1236,
+          "total_tokens": 3229,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 1920
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 1166
+            "reasoning_tokens": 1064
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1865
+          "prompt_cache_hit_tokens": 1920,
+          "prompt_cache_miss_tokens": 73
         },
         "citation_ids_valid": true
       }
@@ -6135,8 +6135,8 @@
       "reference_answer": "Pydantic BaseModel。",
       "human_review": "pending",
       "result": {
-        "trace_id": "805d5567-3116-4943-9f12-737eac7b739f",
-        "answer": "FastAPI 请求体模型应该继承 Pydantic 的 `BaseModel` 基类 [1][3]。资料中明确说明“把数据模型声明为继承 `BaseModel` 的类” [1]，并从 `pydantic` 导入 `BaseModel` [3]。示例代码也展示为 `class Item(BaseModel)` [1][2][4]。",
+        "trace_id": "7f6e52c2-bb44-46a6-97de-c058d66c898a",
+        "answer": "FastAPI 请求体模型应该继承 Pydantic 的 `BaseModel` 基类[1][3]。声明时需要从 `pydantic` 导入 `BaseModel`，然后让模型类继承它[3]。例如：\n\n```python\nfrom pydantic import BaseModel\n\nclass Item(BaseModel):\n    name: str\n    description: str | None = None\n    price: float\n    tax: float | None = None\n```\n\n[1][3]",
         "refused": false,
         "sources": [
           {
@@ -6165,7 +6165,7 @@
             "bm25_score": 18.655800625104167,
             "rerank_score": 0.8958872556686401,
             "citation": 2,
-            "cited": true
+            "cited": false
           },
           {
             "id": "74af18df-b1a6-430b-b233-572538a4b508",
@@ -6177,7 +6177,7 @@
             "score": 0.03252247488101534,
             "vector_score": 0.711334953440221,
             "bm25_score": 20.899279663519962,
-            "rerank_score": 0.8391133546829224,
+            "rerank_score": 0.8395366072654724,
             "citation": 3,
             "cited": true
           },
@@ -6191,9 +6191,9 @@
             "score": 0.03252247488101534,
             "vector_score": 0.6712120020098813,
             "bm25_score": 22.07660043542077,
-            "rerank_score": 0.8369324803352356,
+            "rerank_score": 0.8365746736526489,
             "citation": 4,
-            "cited": true
+            "cited": false
           },
           {
             "id": "2836d9ea-1249-4590-af49-614c6e5aaef8",
@@ -6205,26 +6205,26 @@
             "score": 0.02804284323271665,
             "vector_score": 0.6146378080396646,
             "bm25_score": 12.859832593264654,
-            "rerank_score": 0.8323436975479126,
+            "rerank_score": 0.832590639591217,
             "citation": 5,
             "cited": false
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 8204,
+        "latency_ms": 6573,
         "usage": {
           "prompt_tokens": 1919,
-          "completion_tokens": 494,
-          "total_tokens": 2413,
+          "completion_tokens": 300,
+          "total_tokens": 2219,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 1792
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 413
+            "reasoning_tokens": 198
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1791
+          "prompt_cache_hit_tokens": 1792,
+          "prompt_cache_miss_tokens": 127
         },
         "citation_ids_valid": true
       }
@@ -6236,8 +6236,8 @@
       "reference_answer": "从 fastapi 导入 Form。",
       "human_review": "pending",
       "result": {
-        "trace_id": "0e758587-6435-4ded-9dd2-7f167e315d5f",
-        "answer": "FastAPI 通过 `Form` 对象声明表单字段 [1][5]。资料显示接收表单字段时要使用 `Form` [5]，并且可以使用 `Form` 声明与 `Body`、`Query`、`Path`、`Cookie` 相同的元数据和验证 [1]。小结也提到使用 `Form` 声明表单数据输入参数 [2]。",
+        "trace_id": "c3970426-04dd-4ca9-aef2-4ccaf3fee6e6",
+        "answer": "FastAPI 通过 `Form` 对象声明表单字段。资料指出：“接收的不是 JSON，而是表单字段时，要使用 `Form`。”[5] 并且“声明表单体要显式使用 `Form`，否则，FastAPI 会把该参数当作查询参数或请求体（JSON）参数。”[1]",
         "refused": false,
         "sources": [
           {
@@ -6264,9 +6264,9 @@
             "score": 0.03128054740957967,
             "vector_score": 0.6789501842450906,
             "bm25_score": 37.07710768527413,
-            "rerank_score": 0.9034901857376099,
+            "rerank_score": 0.903195321559906,
             "citation": 2,
-            "cited": true
+            "cited": false
           },
           {
             "id": "61fc3273-8f00-400f-b5d1-152552ad24cc",
@@ -6278,7 +6278,7 @@
             "score": 0.015873015873015872,
             "vector_score": 0.6857674744591855,
             "bm25_score": 6.561353971229334,
-            "rerank_score": 0.8760034441947937,
+            "rerank_score": 0.8771064281463623,
             "citation": 3,
             "cited": false
           },
@@ -6292,7 +6292,7 @@
             "score": 0.014705882352941176,
             "vector_score": null,
             "bm25_score": 16.386083994770228,
-            "rerank_score": 0.8529327511787415,
+            "rerank_score": 0.8522212505340576,
             "citation": 4,
             "cited": false
           },
@@ -6306,26 +6306,26 @@
             "score": 0.015873015873015872,
             "vector_score": null,
             "bm25_score": 34.23864190070218,
-            "rerank_score": 0.7894627451896667,
+            "rerank_score": 0.7887910008430481,
             "citation": 5,
             "cited": true
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 8584,
+        "latency_ms": 10778,
         "usage": {
           "prompt_tokens": 1845,
-          "completion_tokens": 575,
-          "total_tokens": 2420,
+          "completion_tokens": 764,
+          "total_tokens": 2609,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 1792
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 497
+            "reasoning_tokens": 693
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1717
+          "prompt_cache_hit_tokens": 1792,
+          "prompt_cache_miss_tokens": 53
         },
         "citation_ids_valid": true
       }
@@ -6337,8 +6337,8 @@
       "reference_answer": "设置在路径操作装饰器。",
       "human_review": "pending",
       "result": {
-        "trace_id": "6b89a280-fa21-468e-a60e-6957cb3aa4ce",
-        "answer": "_model 应设置在**路径操作装饰器**的参数中，而不是函数参数中 [1][2]。\n\n资料明确指出，`response_model` 是装饰器方法（如 `get`、`post` 等）的一个参数，它不属于*路径操作函数* [1]。总结部分也说明应使用*路径操作装饰器*的 `response_model` 参数来定义响应模型 [2]。",
+        "trace_id": "a4d3f5e1-3465-4d8c-b763-e97a49532fd3",
+        "answer": "_model 应设置在**装饰器参数**中，而不是函数参数中。[1][2]\n\n资料明确指出：`response_model` 是“装饰器”方法（如 `get`、`post` 等）的一个参数，不属于*路径操作函数*。[1] 总结部分也说明应使用*路径操作装饰器*的 `response_model` 参数来定义响应模型。[2]",
         "refused": false,
         "sources": [
           {
@@ -6351,7 +6351,7 @@
             "score": 0.031009615384615385,
             "vector_score": 0.6177565648308644,
             "bm25_score": 23.406242260523257,
-            "rerank_score": 0.9780666828155518,
+            "rerank_score": 0.9780175089836121,
             "citation": 1,
             "cited": true
           },
@@ -6365,7 +6365,7 @@
             "score": 0.032266458495966696,
             "vector_score": 0.6828799618207911,
             "bm25_score": 24.47417946503993,
-            "rerank_score": 0.8969269394874573,
+            "rerank_score": 0.8952421545982361,
             "citation": 2,
             "cited": true
           },
@@ -6379,7 +6379,7 @@
             "score": 0.030158730158730156,
             "vector_score": 0.6311390618661343,
             "bm25_score": 17.27947966618413,
-            "rerank_score": 0.8092026114463806,
+            "rerank_score": 0.806557834148407,
             "citation": 3,
             "cited": false
           },
@@ -6393,7 +6393,7 @@
             "score": 0.031009615384615385,
             "vector_score": 0.5922505841288221,
             "bm25_score": 23.82065594486486,
-            "rerank_score": 0.7911393046379089,
+            "rerank_score": 0.7885043621063232,
             "citation": 4,
             "cited": false
           },
@@ -6407,26 +6407,26 @@
             "score": 0.028370221327967807,
             "vector_score": 0.5740981917529453,
             "bm25_score": 16.66534702185828,
-            "rerank_score": 0.6264891624450684,
+            "rerank_score": 0.6290996670722961,
             "citation": 5,
             "cited": false
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 6131,
+        "latency_ms": 6176,
         "usage": {
           "prompt_tokens": 2019,
-          "completion_tokens": 260,
-          "total_tokens": 2279,
+          "completion_tokens": 223,
+          "total_tokens": 2242,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 1920
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 174
+            "reasoning_tokens": 137
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1891
+          "prompt_cache_hit_tokens": 1920,
+          "prompt_cache_miss_tokens": 99
         },
         "citation_ids_valid": true
       }
@@ -6438,8 +6438,8 @@
       "reference_answer": "现有资料不足以回答",
       "human_review": "pending",
       "result": {
-        "trace_id": "c427595c-c2f9-4705-8076-baf2f48243a3",
-        "answer": "现有资料不足以回答“生产数据库密码是多少”。\n\n资料中未包含任何生产数据库密码信息，仅涉及 FastAPI 示例代码中的明文密码字段、响应模型安全提醒及测试用的 `fake_secret_token = \"coneofsilence\"` 等内容，但这些都不是生产数据库密码[1][2][3][4][5]。",
+        "trace_id": "164c18f0-045d-4f33-ab12-3cbcc638120b",
+        "answer": "现有资料不足以回答。  \n\n资料中唯一出现的类似凭据是 `fake_secret_token = \"coneofsilence\"` 和 `fake_db` 测试数据，这些是文档示例中的假数据，并非生产数据库密码 [4][5]。资料还强调不要存储或返回用户的明文密码 [1][2][3]，但未提供任何生产数据库密码。",
         "refused": true,
         "sources": [
           {
@@ -6480,7 +6480,7 @@
             "score": 0.028693528693528692,
             "vector_score": 0.4772811151929046,
             "bm25_score": 21.441101222552437,
-            "rerank_score": 0.002551667159423232,
+            "rerank_score": 0.0026652503293007612,
             "citation": 3,
             "cited": true
           },
@@ -6494,7 +6494,7 @@
             "score": 0.015384615384615385,
             "vector_score": 0.4968719153874853,
             "bm25_score": 0,
-            "rerank_score": 0.0022476643789559603,
+            "rerank_score": 0.0022495652083307505,
             "citation": 4,
             "cited": true
           },
@@ -6508,26 +6508,26 @@
             "score": 0.015873015873015872,
             "vector_score": 0.4998433512596292,
             "bm25_score": 0,
-            "rerank_score": 0.002089085290208459,
+            "rerank_score": 0.002107863547280431,
             "citation": 5,
             "cited": true
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 6322,
+        "latency_ms": 8876,
         "usage": {
           "prompt_tokens": 1716,
-          "completion_tokens": 265,
-          "total_tokens": 1981,
+          "completion_tokens": 452,
+          "total_tokens": 2168,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 1664
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 193
+            "reasoning_tokens": 372
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1588
+          "prompt_cache_hit_tokens": 1664,
+          "prompt_cache_miss_tokens": 52
         },
         "citation_ids_valid": true
       }
@@ -6539,8 +6539,8 @@
       "reference_answer": "现有资料不足以回答",
       "human_review": "pending",
       "result": {
-        "trace_id": "2d097239-8927-4a50-9be3-0d22ef0ca47f",
-        "answer": "现有资料不足以回答。提供的参考资料中未提及“内部 Atlas 服务”或“2027 年的迁移时间”相关信息。",
+        "trace_id": "6b667f37-25ee-40e0-a35b-897d95ccbf8e",
+        "answer": "现有资料不足以回答。\n\n查阅提供的参考资料 [1][2][3][4][5]，内容均为 FastAPI 文档片段，涉及错误处理、请求体更新、中间件、请求体与请求文件等主题，未提及“内部 Atlas 服务”或“2027 年的迁移时间” [1][2][3][4][5]。因此无法给出该迁移时间。",
         "refused": true,
         "sources": [
           {
@@ -6553,9 +6553,9 @@
             "score": 0.015873015873015872,
             "vector_score": null,
             "bm25_score": 16.04391030294138,
-            "rerank_score": 0.000199860951397568,
+            "rerank_score": 0.00019731819338630885,
             "citation": 1,
-            "cited": false
+            "cited": true
           },
           {
             "id": "54136677-5aa2-4fa6-9e67-ce765f7245f5",
@@ -6569,21 +6569,7 @@
             "bm25_score": 1.585943312003304,
             "rerank_score": 0.00010048836702480912,
             "citation": 2,
-            "cited": false
-          },
-          {
-            "id": "9a8a3d05-d2cd-40ec-9b24-bf7bd395617b",
-            "document_id": "ea061ae5-a6e8-4eee-8929-a0070be9c4cc",
-            "text": "内部均可使用类型提示、代码补全（如果接收的不是 Pydantic 模型，而是**字典**，就没有这样的支持）：\r\n\r\n<img src=\"/img/tutorial/body/image03.png\">\r\n\r\n还支持检查错误的类型操作：\r\n\r\n<img src=\"/img/tutorial/body/image04.png\">\r\n\r\n这并非偶然，整个 **FastAPI** 框架都是围绕这种思路精心设计的。\r\n\r\n并且，在 FastAPI 的设计阶段，我们就已经进行了全面测试，以确保 FastAPI 可以获得所有编辑器的支持。\r\n\r\n我们还改进了 Pydantic，让它也支持这些功能。\r\n\r\n虽然上面的截图取自 <a href=\"https://code.visualstudio.com\" class=\"external-link\" target=\"_blank\">Visual Studio Code</a>。\r\n\r\n但 <a href=\"https://www.jetbrains.com/pycharm/\" class=\"external-link\" target=\"_blank\">PyCharm</a> 和大多数 Python 编辑器也支持同样的功能：\r\n\r\n<img src=\"/img/tutorial/body/image05.png\">\r\n\r\n/// tip | \"提示\"\r\n\r\n使用 <a href=\"https://www.jetbrains.com/pycharm/\" class=\"external-link\" target=\"_blank\">PyCharm</a> 编辑器时，推荐安装 <a href=\"https://github.com/koxudaxi/pydantic-pycharm-plugin/\" class=\"external-link\" tar",
-            "page": 1,
-            "filename": "body.md",
-            "version": "40e33e492dbf",
-            "score": 0.016129032258064516,
-            "vector_score": 0.42946159413838647,
-            "bm25_score": 7.410185349608007,
-            "rerank_score": 8.769195119384676e-05,
-            "citation": 3,
-            "cited": false
+            "cited": true
           },
           {
             "id": "9192ec91-0979-49c2-a248-10fb042d5e22",
@@ -6595,9 +6581,23 @@
             "score": 0.02938045560996381,
             "vector_score": 0.4366889894216507,
             "bm25_score": 8.69785727633902,
-            "rerank_score": 8.765199163462967e-05,
+            "rerank_score": 8.728332613827661e-05,
+            "citation": 3,
+            "cited": true
+          },
+          {
+            "id": "9a8a3d05-d2cd-40ec-9b24-bf7bd395617b",
+            "document_id": "ea061ae5-a6e8-4eee-8929-a0070be9c4cc",
+            "text": "内部均可使用类型提示、代码补全（如果接收的不是 Pydantic 模型，而是**字典**，就没有这样的支持）：\r\n\r\n<img src=\"/img/tutorial/body/image03.png\">\r\n\r\n还支持检查错误的类型操作：\r\n\r\n<img src=\"/img/tutorial/body/image04.png\">\r\n\r\n这并非偶然，整个 **FastAPI** 框架都是围绕这种思路精心设计的。\r\n\r\n并且，在 FastAPI 的设计阶段，我们就已经进行了全面测试，以确保 FastAPI 可以获得所有编辑器的支持。\r\n\r\n我们还改进了 Pydantic，让它也支持这些功能。\r\n\r\n虽然上面的截图取自 <a href=\"https://code.visualstudio.com\" class=\"external-link\" target=\"_blank\">Visual Studio Code</a>。\r\n\r\n但 <a href=\"https://www.jetbrains.com/pycharm/\" class=\"external-link\" target=\"_blank\">PyCharm</a> 和大多数 Python 编辑器也支持同样的功能：\r\n\r\n<img src=\"/img/tutorial/body/image05.png\">\r\n\r\n/// tip | \"提示\"\r\n\r\n使用 <a href=\"https://www.jetbrains.com/pycharm/\" class=\"external-link\" target=\"_blank\">PyCharm</a> 编辑器时，推荐安装 <a href=\"https://github.com/koxudaxi/pydantic-pycharm-plugin/\" class=\"external-link\" tar",
+            "page": 1,
+            "filename": "body.md",
+            "version": "40e33e492dbf",
+            "score": 0.016129032258064516,
+            "vector_score": 0.42946159413838647,
+            "bm25_score": 7.410185349608007,
+            "rerank_score": 8.704825449967757e-05,
             "citation": 4,
-            "cited": false
+            "cited": true
           },
           {
             "id": "1976c70c-44c9-4841-b992-d897da38e86d",
@@ -6611,21 +6611,21 @@
             "bm25_score": 13.917378994344226,
             "rerank_score": 8.33422745927237e-05,
             "citation": 5,
-            "cited": false
+            "cited": true
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 5738,
+        "latency_ms": 8480,
         "usage": {
           "prompt_tokens": 1861,
-          "completion_tokens": 138,
-          "total_tokens": 1999,
+          "completion_tokens": 459,
+          "total_tokens": 2320,
           "prompt_tokens_details": {
             "cached_tokens": 128
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 110
+            "reasoning_tokens": 377
           },
           "prompt_cache_hit_tokens": 128,
           "prompt_cache_miss_tokens": 1733
@@ -6640,8 +6640,8 @@
       "reference_answer": "现有资料不足以回答",
       "human_review": "pending",
       "result": {
-        "trace_id": "9ad9a24e-b9a2-4f8f-8a89-f0dc914af4f5",
-        "answer": "现有资料不足以回答。参考资料 [1][2][3][4][5] 均为 FastAPI 使用文档，内容涉及路径参数、响应状态码、应用启动、错误处理等，未包含本项目服务器当前 CPU 温度数据。",
+        "trace_id": "0a6a21b0-a7c2-4782-9a19-367f3a24d4e3",
+        "answer": "现有资料不足以回答。\n\n提供的资料仅涉及 FastAPI 的路径参数与顺序 [1]、HTTP 状态码 [2]、应用启动步骤 [3]、错误处理 [4][5]，均未包含本项目服务器当前 CPU 温度或任何硬件温度监控数据 [1][2][3][4][5]。因此无法依据现有资料给出 CPU 温度。",
         "refused": true,
         "sources": [
           {
@@ -6654,7 +6654,7 @@
             "score": 0.014285714285714285,
             "vector_score": null,
             "bm25_score": 11.445529898459634,
-            "rerank_score": 0.003470095107331872,
+            "rerank_score": 0.0034448972437530756,
             "citation": 1,
             "cited": true
           },
@@ -6668,7 +6668,7 @@
             "score": 0.014925373134328358,
             "vector_score": 0.4862855054625817,
             "bm25_score": 3.184143418722533,
-            "rerank_score": 0.0014303269563242793,
+            "rerank_score": 0.001427508657798171,
             "citation": 2,
             "cited": true
           },
@@ -6682,7 +6682,7 @@
             "score": 0.02964254577157803,
             "vector_score": 0.4807895861483403,
             "bm25_score": 17.604957275398192,
-            "rerank_score": 0.0012942502507939935,
+            "rerank_score": 0.0012788567692041397,
             "citation": 3,
             "cited": true
           },
@@ -6696,7 +6696,7 @@
             "score": 0.026709401709401708,
             "vector_score": 0.47225585207487275,
             "bm25_score": 10.213821669713665,
-            "rerank_score": 0.0009921598248183727,
+            "rerank_score": 0.0009878907585516572,
             "citation": 4,
             "cited": true
           },
@@ -6710,26 +6710,26 @@
             "score": 0.014084507042253521,
             "vector_score": 0.48248923294679913,
             "bm25_score": 0,
-            "rerank_score": 0.0009260940132662654,
+            "rerank_score": 0.0009430009522475302,
             "citation": 5,
             "cited": true
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 7904,
+        "latency_ms": 10126,
         "usage": {
           "prompt_tokens": 2063,
-          "completion_tokens": 388,
-          "total_tokens": 2451,
+          "completion_tokens": 553,
+          "total_tokens": 2616,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 2048
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 336
+            "reasoning_tokens": 476
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1935
+          "prompt_cache_hit_tokens": 2048,
+          "prompt_cache_miss_tokens": 15
         },
         "citation_ids_valid": true
       }
@@ -6741,8 +6741,8 @@
       "reference_answer": "现有资料不足以回答",
       "human_review": "pending",
       "result": {
-        "trace_id": "aa179563-2ae7-4a57-86c1-b73922f28ab6",
-        "answer": "现有资料不足以回答。",
+        "trace_id": "6a9d5151-f5eb-47b6-9cb0-b2f7e22a8899",
+        "answer": "现有资料不足以回答。提供的参考资料均为 FastAPI 技术文档片段，其中未包含任何关于公司研发团队年度预算的信息。",
         "refused": true,
         "sources": [
           {
@@ -6755,7 +6755,7 @@
             "score": 0.015873015873015872,
             "vector_score": 0.39451246389643635,
             "bm25_score": 3.9910885197875046,
-            "rerank_score": 0.0007015567389316857,
+            "rerank_score": 0.0006949101807549596,
             "citation": 1,
             "cited": false
           },
@@ -6783,7 +6783,7 @@
             "score": 0.016129032258064516,
             "vector_score": 0.397027667285328,
             "bm25_score": 0,
-            "rerank_score": 0.0001448216353310272,
+            "rerank_score": 0.00014740492042619735,
             "citation": 3,
             "cited": false
           },
@@ -6811,26 +6811,26 @@
             "score": 0.014705882352941176,
             "vector_score": 0.3807572878222127,
             "bm25_score": 1.1354329171811035,
-            "rerank_score": 3.325510988361202e-05,
+            "rerank_score": 3.346782614244148e-05,
             "citation": 5,
             "cited": false
           }
         ],
         "mode": "rerank",
         "model_mode": "api",
-        "latency_ms": 6294,
+        "latency_ms": 5293,
         "usage": {
           "prompt_tokens": 1840,
-          "completion_tokens": 242,
-          "total_tokens": 2082,
+          "completion_tokens": 145,
+          "total_tokens": 1985,
           "prompt_tokens_details": {
-            "cached_tokens": 128
+            "cached_tokens": 1792
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 236
+            "reasoning_tokens": 117
           },
-          "prompt_cache_hit_tokens": 128,
-          "prompt_cache_miss_tokens": 1712
+          "prompt_cache_hit_tokens": 1792,
+          "prompt_cache_miss_tokens": 48
         },
         "citation_ids_valid": true
       }
@@ -6844,41 +6844,41 @@
       "attempts": 32,
       "errors": 0,
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 0.90625,
-      "evidence_mrr_at_5": 0.7395833333333334,
-      "top1_evidence_hit": 0.625,
-      "p50_ms": 921.225,
-      "p95_ms": 1181.17
+      "evidence_hit_at_5": 0.8125,
+      "evidence_mrr_at_5": 0.6276041666666666,
+      "top1_evidence_hit": 0.5,
+      "p50_ms": 941.2349999999999,
+      "p95_ms": 1355.78
     },
     "bm25": {
       "attempts": 32,
       "errors": 0,
       "document_recall_at_5": 0.96875,
-      "evidence_hit_at_5": 0.9375,
-      "evidence_mrr_at_5": 0.7473958333333334,
-      "top1_evidence_hit": 0.625,
-      "p50_ms": 15.29,
-      "p95_ms": 17.86
+      "evidence_hit_at_5": 0.90625,
+      "evidence_mrr_at_5": 0.621875,
+      "top1_evidence_hit": 0.4375,
+      "p50_ms": 12.065000000000001,
+      "p95_ms": 17.75
     },
     "hybrid": {
       "attempts": 32,
       "errors": 0,
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 0.96875,
-      "evidence_mrr_at_5": 0.8109375,
-      "top1_evidence_hit": 0.6875,
-      "p50_ms": 913.65,
-      "p95_ms": 1454.01
+      "evidence_hit_at_5": 0.9375,
+      "evidence_mrr_at_5": 0.7197916666666667,
+      "top1_evidence_hit": 0.5625,
+      "p50_ms": 932.02,
+      "p95_ms": 1514.15
     },
     "rerank": {
       "attempts": 32,
       "errors": 0,
       "document_recall_at_5": 1.0,
-      "evidence_hit_at_5": 0.96875,
-      "evidence_mrr_at_5": 0.8854166666666666,
-      "top1_evidence_hit": 0.8125,
-      "p50_ms": 2106.5950000000003,
-      "p95_ms": 2779.46
+      "evidence_hit_at_5": 0.9375,
+      "evidence_mrr_at_5": 0.7588541666666667,
+      "top1_evidence_hit": 0.65625,
+      "p50_ms": 2133.505,
+      "p95_ms": 2743.58
     }
   }
 }

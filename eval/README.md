@@ -19,6 +19,6 @@
 
 ## 操作
 
-先运行 fetch_corpus.py 下载固定语料，再运行 build_dataset.py 验证标签，最后运行 benchmark.py。所有脚本均从项目根目录运行。benchmark 的默认 split 是 dev；--answers 控制真实生成调用上限，默认为 0。检查原始结果中的 status 与 errors，不仅看平均指标。
+已有语料与标签时，直接运行 audit_labels.py 检查即可。重新生成时，依次运行 fetch_corpus.py、build_dataset.py、refine_anchors.py、audit_labels.py，最后运行 benchmark.py；缺少精修步骤会恢复早期标签。所有脚本均从项目根目录运行。benchmark 的默认 split 是 dev；--answers 控制真实生成调用上限，默认为 0。检查原始结果中的 status、errors 和 dataset_sha256，不仅看平均指标。report.py 会排除与当前标签哈希不一致的旧结果。
 
 评测过程使用单独的本地 Qdrant 数据目录，不上传用户已导入的私人文件。公开语料和测试问题会发往 .env 配置的服务商。硅基流动配置下可以复用 Embedding 密钥测试 BGE 重排；脚本不输出密钥。

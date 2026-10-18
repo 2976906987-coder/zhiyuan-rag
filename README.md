@@ -61,7 +61,7 @@ python -m venv .venv
 
 测试使用嵌入式 Qdrant 和模拟模型响应，验证导入、去重、版本过滤、引用失败、删除、持久化与 API 合约。它不能代替真实供应商联调。
 
-初始评测集只有 5 个自建样例问题，输出文档级 Recall@5、MRR@5 和平均检索延迟，不能作为简历质量提升数据。后续应扩展到 80–100 个标注问题，按文档/问题家族拆分调参与保留测试集，补充无答案、冲突、跨段落问题及人工依据评审。
+早期 5 题样例仅用于冒烟测试。目前已新增 80 题评测集，按文档拆分 dev/test，完成四种检索方案对比，结果见 [实测报告](eval/REPORT.md)。标签仍需独立人工复核；证据锚点命中不能解释为答案准确率，后续应补充冲突、跨段落问题及人工依据评审。
 
 ## Docker
 
@@ -71,7 +71,7 @@ python -m venv .venv
 
 单用户、本地受信环境、单进程运行（不要启用多个 uvicorn worker）。同步导入通过线程池执行；状态可查询，重启中断的导入会标为 failed。BM25 每次查询重建，适合小语料，不是高并发实现。追踪记录包含问题和片段，存本地 SQLite。没有认证、生产任务队列或租户隔离，不直接部署到公网。
 
-下一阶段：真实模型联调、评测标注与消融实验、异步导入任务、章节切分、支持性校验、多轮会话、权限控制。简历应据实际实现与实测数据描述贡献，不声称生产规模或预设准确率。
+真实模型联调和四方案检索对比已有结果。后续重点是独立人工评测审核；异步导入任务、章节切分、支持性校验、多轮会话和权限控制仍属扩展项。简历应据实际实现与实测数据描述贡献，不声称生产规模或预设准确率。
 
 
 ## 真实文档评测（第二阶段）
@@ -80,6 +80,8 @@ python -m venv .venv
 
 ```powershell
 .\.venv\Scripts\python.exe eval/build_dataset.py
+.\.venv\Scripts\python.exe eval/refine_anchors.py
+.\.venv\Scripts\python.exe eval/audit_labels.py
 .\.venv\Scripts\python.exe eval/benchmark.py --split dev --answers 8 --output eval/results/dev.json
 .\.venv\Scripts\python.exe eval/benchmark.py --split test --answers 8 --output eval/results/test.json
 .\.venv\Scripts\python.exe eval/report.py
@@ -88,3 +90,10 @@ python -m venv .venv
 评测库独立于用户知识库；运行会调用真实 Embedding / Rerank / LLM 服务。数据集标签待人工复核，证据锚点指标不等于答案准确率。不要把初稿实验的数值声称为生产环境效果。
 
 真实模式启动使用 `start-api.ps1`，端口 8001；演示模式仍使用 `start-demo.ps1`，端口 8000。修改 .env 后重启相应服务才能加载配置。
+
+## 交付材料
+
+- [项目进度与验证范围](PROGRESS.md)
+- [部署和可靠性说明](DEPLOYMENT.md)
+- [演示脚本、简历草稿与面试讲解](docs/DEMO_AND_RESUME.md)
+- GitHub 自动回归流程位于 `.github/workflows/verify.yml`，本地检查通过不代表 GitHub CI 已运行。
