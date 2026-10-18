@@ -65,10 +65,26 @@ python -m venv .venv
 
 ## Docker
 
-配置 .env 后运行 `docker compose up --build`。应用仅绑定本机 8000 端口，Qdrant 不对外暴露；数据使用命名卷持久化。Compose 路径需要 Docker Desktop / Linux 容器。Qdrant 本地模式默认无需 Docker，适合开发验收。
+配置 .env 后运行 `docker compose up --build -d`。应用仅绑定本机 8002 端口，Qdrant 不对外暴露；数据使用命名卷持久化。Compose 路径需要 Docker Desktop / Linux 容器。Qdrant 本地模式默认无需 Docker，适合开发验收。已补齐数据库就绪等待、健康检查与独立验收脚本；当前机器缺少可用 Docker，实际容器构建和运行仍待验证，详见 [部署与可靠性说明](DEPLOYMENT.md)。
 
 ## MVP 边界与后续
 
 单用户、本地受信环境、单进程运行（不要启用多个 uvicorn worker）。同步导入通过线程池执行；状态可查询，重启中断的导入会标为 failed。BM25 每次查询重建，适合小语料，不是高并发实现。追踪记录包含问题和片段，存本地 SQLite。没有认证、生产任务队列或租户隔离，不直接部署到公网。
 
 下一阶段：真实模型联调、评测标注与消融实验、异步导入任务、章节切分、支持性校验、多轮会话、权限控制。简历应据实际实现与实测数据描述贡献，不声称生产规模或预设准确率。
+
+
+## 真实文档评测（第二阶段）
+
+新增固定 FastAPI 0.115.0 官方中文语料，16 篇文档，80 道初稿问题（64 道可回答、16 道资料外问题）。完整说明见 [eval/README.md](eval/README.md)，实测报告由 [eval/report.py](eval/report.py) 从原始结果生成。
+
+```powershell
+.\.venv\Scripts\python.exe eval/build_dataset.py
+.\.venv\Scripts\python.exe eval/benchmark.py --split dev --answers 8 --output eval/results/dev.json
+.\.venv\Scripts\python.exe eval/benchmark.py --split test --answers 8 --output eval/results/test.json
+.\.venv\Scripts\python.exe eval/report.py
+```
+
+评测库独立于用户知识库；运行会调用真实 Embedding / Rerank / LLM 服务。数据集标签待人工复核，证据锚点指标不等于答案准确率。不要把初稿实验的数值声称为生产环境效果。
+
+真实模式启动使用 `start-api.ps1`，端口 8001；演示模式仍使用 `start-demo.ps1`，端口 8000。修改 .env 后重启相应服务才能加载配置。

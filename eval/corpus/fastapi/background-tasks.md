@@ -105,7 +105,33 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 //// tab | Python 3.10+
 
 ```Python hl_lines="13  15  22  25"
-{!> ../../../docs_src/background_tasks/tutorial002_an_py310.py!}
+from typing import Annotated
+
+from fastapi import BackgroundTasks, Depends, FastAPI
+
+app = FastAPI()
+
+
+def write_log(message: str):
+    with open("log.txt", mode="a") as log:
+        log.write(message)
+
+
+def get_query(background_tasks: BackgroundTasks, q: str | None = None):
+    if q:
+        message = f"found query: {q}\n"
+        background_tasks.add_task(write_log, message)
+    return q
+
+
+@app.post("/send-notification/{email}")
+async def send_notification(
+    email: str, background_tasks: BackgroundTasks, q: Annotated[str, Depends(get_query)]
+):
+    message = f"message to {email}\n"
+    background_tasks.add_task(write_log, message)
+    return {"message": "Message sent"}
+
 ```
 
 ////
@@ -113,7 +139,33 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 //// tab | Python 3.9+
 
 ```Python hl_lines="13  15  22  25"
-{!> ../../../docs_src/background_tasks/tutorial002_an_py39.py!}
+from typing import Annotated, Union
+
+from fastapi import BackgroundTasks, Depends, FastAPI
+
+app = FastAPI()
+
+
+def write_log(message: str):
+    with open("log.txt", mode="a") as log:
+        log.write(message)
+
+
+def get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):
+    if q:
+        message = f"found query: {q}\n"
+        background_tasks.add_task(write_log, message)
+    return q
+
+
+@app.post("/send-notification/{email}")
+async def send_notification(
+    email: str, background_tasks: BackgroundTasks, q: Annotated[str, Depends(get_query)]
+):
+    message = f"message to {email}\n"
+    background_tasks.add_task(write_log, message)
+    return {"message": "Message sent"}
+
 ```
 
 ////
@@ -121,7 +173,34 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 //// tab | Python 3.8+
 
 ```Python hl_lines="14  16  23  26"
-{!> ../../../docs_src/background_tasks/tutorial002_an.py!}
+from typing import Union
+
+from fastapi import BackgroundTasks, Depends, FastAPI
+from typing_extensions import Annotated
+
+app = FastAPI()
+
+
+def write_log(message: str):
+    with open("log.txt", mode="a") as log:
+        log.write(message)
+
+
+def get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):
+    if q:
+        message = f"found query: {q}\n"
+        background_tasks.add_task(write_log, message)
+    return q
+
+
+@app.post("/send-notification/{email}")
+async def send_notification(
+    email: str, background_tasks: BackgroundTasks, q: Annotated[str, Depends(get_query)]
+):
+    message = f"message to {email}\n"
+    background_tasks.add_task(write_log, message)
+    return {"message": "Message sent"}
+
 ```
 
 ////
@@ -135,7 +214,31 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 ///
 
 ```Python hl_lines="11  13  20  23"
-{!> ../../../docs_src/background_tasks/tutorial002_py310.py!}
+from fastapi import BackgroundTasks, Depends, FastAPI
+
+app = FastAPI()
+
+
+def write_log(message: str):
+    with open("log.txt", mode="a") as log:
+        log.write(message)
+
+
+def get_query(background_tasks: BackgroundTasks, q: str | None = None):
+    if q:
+        message = f"found query: {q}\n"
+        background_tasks.add_task(write_log, message)
+    return q
+
+
+@app.post("/send-notification/{email}")
+async def send_notification(
+    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)
+):
+    message = f"message to {email}\n"
+    background_tasks.add_task(write_log, message)
+    return {"message": "Message sent"}
+
 ```
 
 ////
@@ -149,7 +252,33 @@ async def send_notification(email: str, background_tasks: BackgroundTasks):
 ///
 
 ```Python hl_lines="13  15  22  25"
-{!> ../../../docs_src/background_tasks/tutorial002.py!}
+from typing import Union
+
+from fastapi import BackgroundTasks, Depends, FastAPI
+
+app = FastAPI()
+
+
+def write_log(message: str):
+    with open("log.txt", mode="a") as log:
+        log.write(message)
+
+
+def get_query(background_tasks: BackgroundTasks, q: Union[str, None] = None):
+    if q:
+        message = f"found query: {q}\n"
+        background_tasks.add_task(write_log, message)
+    return q
+
+
+@app.post("/send-notification/{email}")
+async def send_notification(
+    email: str, background_tasks: BackgroundTasks, q: str = Depends(get_query)
+):
+    message = f"message to {email}\n"
+    background_tasks.add_task(write_log, message)
+    return {"message": "Message sent"}
+
 ```
 
 ////

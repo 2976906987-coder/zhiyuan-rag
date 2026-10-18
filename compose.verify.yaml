@@ -1,0 +1,11 @@
+services:
+  app:
+    environment:
+      MODEL_MODE: demo
+      EMBEDDING_DIM: "256"
+      EMBEDDING_MODEL: docker-smoke
+      EMBEDDING_BASE_URL: ""
+      LLM_API_KEY: ""
+      EMBEDDING_API_KEY: ""
+      RERANK_API_KEY: ""
+      RERANK_BASE_URL: ""

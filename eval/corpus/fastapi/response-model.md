@@ -11,7 +11,34 @@
 //// tab | Python 3.10+
 
 ```Python hl_lines="17  22  24-27"
-{!> ../../../docs_src/response_model/tutorial001_py310.py!}
+from typing import Any
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+    tags: list[str] = []
+
+
+@app.post("/items/", response_model=Item)
+async def create_item(item: Item) -> Any:
+    return item
+
+
+@app.get("/items/", response_model=list[Item])
+async def read_items() -> Any:
+    return [
+        {"name": "Portal Gun", "price": 42.0},
+        {"name": "Plumbus", "price": 32.0},
+    ]
+
 ```
 
 ////
@@ -19,7 +46,34 @@
 //// tab | Python 3.9+
 
 ```Python hl_lines="17  22  24-27"
-{!> ../../../docs_src/response_model/tutorial001_py39.py!}
+from typing import Any, Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+    tags: list[str] = []
+
+
+@app.post("/items/", response_model=Item)
+async def create_item(item: Item) -> Any:
+    return item
+
+
+@app.get("/items/", response_model=list[Item])
+async def read_items() -> Any:
+    return [
+        {"name": "Portal Gun", "price": 42.0},
+        {"name": "Plumbus", "price": 32.0},
+    ]
+
 ```
 
 ////
@@ -27,7 +81,34 @@
 //// tab | Python 3.8+
 
 ```Python hl_lines="17  22  24-27"
-{!> ../../../docs_src/response_model/tutorial001.py!}
+from typing import Any, List, Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+    tags: List[str] = []
+
+
+@app.post("/items/", response_model=Item)
+async def create_item(item: Item) -> Any:
+    return item
+
+
+@app.get("/items/", response_model=List[Item])
+async def read_items() -> Any:
+    return [
+        {"name": "Portal Gun", "price": 42.0},
+        {"name": "Plumbus", "price": 32.0},
+    ]
+
 ```
 
 ////
@@ -128,7 +209,31 @@ async def create_user(user: UserIn) -> UserIn:
 //// tab | Python 3.10+
 
 ```Python hl_lines="9  11  16"
-{!> ../../../docs_src/response_model/tutorial003_py310.py!}
+from typing import Any
+
+from fastapi import FastAPI
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
+
 ```
 
 ////
@@ -136,7 +241,31 @@ async def create_user(user: UserIn) -> UserIn:
 //// tab | Python 3.8+
 
 ```Python hl_lines="9  11  16"
-{!> ../../../docs_src/response_model/tutorial003.py!}
+from typing import Any, Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: Union[str, None] = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: Union[str, None] = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
+
 ```
 
 ////
@@ -146,7 +275,31 @@ async def create_user(user: UserIn) -> UserIn:
 //// tab | Python 3.10+
 
 ```Python hl_lines="24"
-{!> ../../../docs_src/response_model/tutorial003_py310.py!}
+from typing import Any
+
+from fastapi import FastAPI
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
+
 ```
 
 ////
@@ -154,7 +307,31 @@ async def create_user(user: UserIn) -> UserIn:
 //// tab | Python 3.8+
 
 ```Python hl_lines="24"
-{!> ../../../docs_src/response_model/tutorial003.py!}
+from typing import Any, Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: Union[str, None] = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: Union[str, None] = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
+
 ```
 
 ////
@@ -164,7 +341,31 @@ async def create_user(user: UserIn) -> UserIn:
 //// tab | Python 3.10+
 
 ```Python hl_lines="22"
-{!> ../../../docs_src/response_model/tutorial003_py310.py!}
+from typing import Any
+
+from fastapi import FastAPI
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str | None = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
+
 ```
 
 ////
@@ -172,7 +373,31 @@ async def create_user(user: UserIn) -> UserIn:
 //// tab | Python 3.8+
 
 ```Python hl_lines="22"
-{!> ../../../docs_src/response_model/tutorial003.py!}
+from typing import Any, Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel, EmailStr
+
+app = FastAPI()
+
+
+class UserIn(BaseModel):
+    username: str
+    password: str
+    email: EmailStr
+    full_name: Union[str, None] = None
+
+
+class UserOut(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: Union[str, None] = None
+
+
+@app.post("/user/", response_model=UserOut)
+async def create_user(user: UserIn) -> Any:
+    return user
+
 ```
 
 ////

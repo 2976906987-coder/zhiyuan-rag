@@ -25,7 +25,24 @@ API 基本上肯定要发送**响应体**，但是客户端不一定发送**请�
 //// tab | Python 3.10+
 
 ```Python hl_lines="2"
-{!> ../../../docs_src/body/tutorial001_py310.py!}
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
 ```
 
 ////
@@ -33,7 +50,26 @@ API 基本上肯定要发送**响应体**，但是客户端不一定发送**请�
 //// tab | Python 3.8+
 
 ```Python hl_lines="4"
-{!> ../../../docs_src/body/tutorial001.py!}
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
 ```
 
 ////
@@ -47,7 +83,24 @@ API 基本上肯定要发送**响应体**，但是客户端不一定发送**请�
 //// tab | Python 3.10+
 
 ```Python hl_lines="5-9"
-{!> ../../../docs_src/body/tutorial001_py310.py!}
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
 ```
 
 ////
@@ -55,7 +108,26 @@ API 基本上肯定要发送**响应体**，但是客户端不一定发送**请�
 //// tab | Python 3.8+
 
 ```Python hl_lines="7-11"
-{!> ../../../docs_src/body/tutorial001.py!}
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
 ```
 
 ////
@@ -89,7 +161,24 @@ API 基本上肯定要发送**响应体**，但是客户端不一定发送**请�
 //// tab | Python 3.10+
 
 ```Python hl_lines="16"
-{!> ../../../docs_src/body/tutorial001_py310.py!}
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
 ```
 
 ////
@@ -97,7 +186,26 @@ API 基本上肯定要发送**响应体**，但是客户端不一定发送**请�
 //// tab | Python 3.8+
 
 ```Python hl_lines="18"
-{!> ../../../docs_src/body/tutorial001.py!}
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
 ```
 
 ////
@@ -170,7 +278,28 @@ Pydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文
 //// tab | Python 3.10+
 
 ```Python hl_lines="19"
-{!> ../../../docs_src/body/tutorial002_py310.py!}
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    item_dict = item.dict()
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+    return item_dict
+
 ```
 
 ////
@@ -178,7 +307,30 @@ Pydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文
 //// tab | Python 3.8+
 
 ```Python hl_lines="21"
-{!> ../../../docs_src/body/tutorial002.py!}
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+
+
+app = FastAPI()
+
+
+@app.post("/items/")
+async def create_item(item: Item):
+    item_dict = item.dict()
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+    return item_dict
+
 ```
 
 ////
@@ -192,7 +344,24 @@ Pydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文
 //// tab | Python 3.10+
 
 ```Python hl_lines="15-16"
-{!> ../../../docs_src/body/tutorial003_py310.py!}
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+app = FastAPI()
+
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item):
+    return {"item_id": item_id, **item.dict()}
+
 ```
 
 ////
@@ -200,7 +369,26 @@ Pydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文
 //// tab | Python 3.8+
 
 ```Python hl_lines="17-18"
-{!> ../../../docs_src/body/tutorial003.py!}
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+
+
+app = FastAPI()
+
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item):
+    return {"item_id": item_id, **item.dict()}
+
 ```
 
 ////
@@ -214,7 +402,27 @@ Pydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文
 //// tab | Python 3.10+
 
 ```Python hl_lines="16"
-{!> ../../../docs_src/body/tutorial004_py310.py!}
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+
+app = FastAPI()
+
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item, q: str | None = None):
+    result = {"item_id": item_id, **item.dict()}
+    if q:
+        result.update({"q": q})
+    return result
+
 ```
 
 ////
@@ -222,7 +430,29 @@ Pydantic 模型的 JSON 概图是 OpenAPI 生成的概图部件，可在 API 文
 //// tab | Python 3.8+
 
 ```Python hl_lines="18"
-{!> ../../../docs_src/body/tutorial004.py!}
+from typing import Union
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+
+class Item(BaseModel):
+    name: str
+    description: Union[str, None] = None
+    price: float
+    tax: Union[float, None] = None
+
+
+app = FastAPI()
+
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item, q: Union[str, None] = None):
+    result = {"item_id": item_id, **item.dict()}
+    if q:
+        result.update({"q": q})
+    return result
+
 ```
 
 ////

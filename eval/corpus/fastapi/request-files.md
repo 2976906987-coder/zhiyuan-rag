@@ -180,7 +180,26 @@ contents = myfile.file.read()
 //// tab | Python 3.9+
 
 ```Python hl_lines="7  14"
-{!> ../../../docs_src/request_files/tutorial001_02_py310.py!}
+from fastapi import FastAPI, File, UploadFile
+
+app = FastAPI()
+
+
+@app.post("/files/")
+async def create_file(file: bytes | None = File(default=None)):
+    if not file:
+        return {"message": "No file sent"}
+    else:
+        return {"file_size": len(file)}
+
+
+@app.post("/uploadfile/")
+async def create_upload_file(file: UploadFile | None = None):
+    if not file:
+        return {"message": "No upload file sent"}
+    else:
+        return {"filename": file.filename}
+
 ```
 
 ////
@@ -188,7 +207,28 @@ contents = myfile.file.read()
 //// tab | Python 3.8+
 
 ```Python hl_lines="9  17"
-{!> ../../../docs_src/request_files/tutorial001_02.py!}
+from typing import Union
+
+from fastapi import FastAPI, File, UploadFile
+
+app = FastAPI()
+
+
+@app.post("/files/")
+async def create_file(file: Union[bytes, None] = File(default=None)):
+    if not file:
+        return {"message": "No file sent"}
+    else:
+        return {"file_size": len(file)}
+
+
+@app.post("/uploadfile/")
+async def create_upload_file(file: Union[UploadFile, None] = None):
+    if not file:
+        return {"message": "No upload file sent"}
+    else:
+        return {"filename": file.filename}
+
 ```
 
 ////
@@ -227,7 +267,38 @@ FastAPI 支持同时上传多个文件。
 //// tab | Python 3.9+
 
 ```Python hl_lines="8  13"
-{!> ../../../docs_src/request_files/tutorial002_py39.py!}
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import HTMLResponse
+
+app = FastAPI()
+
+
+@app.post("/files/")
+async def create_files(files: list[bytes] = File()):
+    return {"file_sizes": [len(file) for file in files]}
+
+
+@app.post("/uploadfiles/")
+async def create_upload_files(files: list[UploadFile]):
+    return {"filenames": [file.filename for file in files]}
+
+
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
+
 ```
 
 ////
@@ -235,7 +306,40 @@ FastAPI 支持同时上传多个文件。
 //// tab | Python 3.8+
 
 ```Python hl_lines="10  15"
-{!> ../../../docs_src/request_files/tutorial002.py!}
+from typing import List
+
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import HTMLResponse
+
+app = FastAPI()
+
+
+@app.post("/files/")
+async def create_files(files: List[bytes] = File()):
+    return {"file_sizes": [len(file) for file in files]}
+
+
+@app.post("/uploadfiles/")
+async def create_upload_files(files: List[UploadFile]):
+    return {"filenames": [file.filename for file in files]}
+
+
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
+
 ```
 
 ////
@@ -258,7 +362,42 @@ FastAPI 支持同时上传多个文件。
 //// tab | Python 3.9+
 
 ```Python hl_lines="16"
-{!> ../../../docs_src/request_files/tutorial003_py39.py!}
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import HTMLResponse
+
+app = FastAPI()
+
+
+@app.post("/files/")
+async def create_files(
+    files: list[bytes] = File(description="Multiple files as bytes"),
+):
+    return {"file_sizes": [len(file) for file in files]}
+
+
+@app.post("/uploadfiles/")
+async def create_upload_files(
+    files: list[UploadFile] = File(description="Multiple files as UploadFile"),
+):
+    return {"filenames": [file.filename for file in files]}
+
+
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
+
 ```
 
 ////
@@ -266,7 +405,44 @@ FastAPI 支持同时上传多个文件。
 //// tab | Python 3.8+
 
 ```Python hl_lines="18"
-{!> ../../../docs_src/request_files/tutorial003.py!}
+from typing import List
+
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import HTMLResponse
+
+app = FastAPI()
+
+
+@app.post("/files/")
+async def create_files(
+    files: List[bytes] = File(description="Multiple files as bytes"),
+):
+    return {"file_sizes": [len(file) for file in files]}
+
+
+@app.post("/uploadfiles/")
+async def create_upload_files(
+    files: List[UploadFile] = File(description="Multiple files as UploadFile"),
+):
+    return {"filenames": [file.filename for file in files]}
+
+
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
+
 ```
 
 ////

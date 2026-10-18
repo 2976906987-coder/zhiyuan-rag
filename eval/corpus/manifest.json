@@ -7,7 +7,7 @@
     {
       "file": "first-steps.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/first-steps.md",
-      "sha256": "073676b2dc715b62529f5d6bd1d1453814c468a342786566a727e8ea7f270f1d",
+      "sha256": "5dffef5f65feaf2ec0dde47def814ae7cceba3efc64baf2107b6c535249e6a78",
       "embedded_snippets": [
         "docs_src/first_steps/tutorial001.py",
         "docs_src/first_steps/tutorial001.py",
@@ -22,7 +22,7 @@
     {
       "file": "path-params.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/path-params.md",
-      "sha256": "339054bf6c4e67f9cd8d5f8ae0c4db9f82ad9b328a8d77ba6c6fffc9770ba7de",
+      "sha256": "8622668306d25b8a95734dd2086a0e192b36aabb6a08d792187e75c8d56ba127",
       "embedded_snippets": [
         "docs_src/path_params/tutorial001.py",
         "docs_src/path_params/tutorial002.py",
@@ -38,7 +38,7 @@
     {
       "file": "query-params.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/query-params.md",
-      "sha256": "1754472a93928b9c99d6310a28e7b79a92e60cf1ddd821c969efe5ef34d2b70e",
+      "sha256": "ac6938acd9624c1c8642a8bc5e3f46b2965c2d211ef692f08707682764ea1512",
       "embedded_snippets": [
         "docs_src/query_params/tutorial001.py",
         "docs_src/query_params/tutorial002_py310.py",
@@ -55,7 +55,7 @@
     {
       "file": "body.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body.md",
-      "sha256": "16db7d2ac3d05e01e0e437f3e507119c5bbadd5ab04082b5361f435c3e5a258b",
+      "sha256": "a4bc050a16ceb58f9e953215003360ccf357eef127aea6078e602a1ecb5043b3",
       "embedded_snippets": [
         "docs_src/body/tutorial001_py310.py",
         "docs_src/body/tutorial001.py",
@@ -74,7 +74,7 @@
     {
       "file": "request-files.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/request-files.md",
-      "sha256": "df7b625a3455faaed0f185e4b8b0b9126592e391922aa4c64c66c8768c133ae1",
+      "sha256": "5d528b84292e6aae6b33560458d01b8c55c3211d0f8837ac5c612b7a0ebb7bd7",
       "embedded_snippets": [
         "docs_src/request_files/tutorial001.py",
         "docs_src/request_files/tutorial001.py",
@@ -91,7 +91,7 @@
     {
       "file": "request-forms.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/request-forms.md",
-      "sha256": "29a1ff9e4af3e100673c69a7e2211d8c7e297b1337aef7347a5bc09f58dcb5a3",
+      "sha256": "3538647b585f68e0dadd48d28e688d44c881cc045ff683251e855bff56a32d2f",
       "embedded_snippets": [
         "docs_src/request_forms/tutorial001.py",
         "docs_src/request_forms/tutorial001.py"
@@ -100,7 +100,7 @@
     {
       "file": "handling-errors.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/handling-errors.md",
-      "sha256": "fb5bf3e7f7ecbd1dae2b1bdf23bd0459e71b5e0eff602fda1cf9048da9de5a5c",
+      "sha256": "7c22d281ea7d8105288041ca85dea493fa0bfcb6c071fd8c1958fb65c6c4c934",
       "embedded_snippets": [
         "docs_src/handling_errors/tutorial001.py",
         "docs_src/handling_errors/tutorial001.py",
@@ -115,7 +115,7 @@
     {
       "file": "response-model.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/response-model.md",
-      "sha256": "641fc5fc02d5b8a9f4f293b78fe223b9e87b71f8683b23026f275af24031bfdb",
+      "sha256": "324c25325b99cc01c63621206552a9bd5bded5d7315c39ae019bdb8c22844313",
       "embedded_snippets": [
         "docs_src/response_model/tutorial001_py310.py",
         "docs_src/response_model/tutorial001_py39.py",
@@ -137,7 +137,7 @@
     {
       "file": "response-status-code.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/response-status-code.md",
-      "sha256": "ef35d6be35f0053fdec183d3d4a979b760a65cb44d46bd0fddd4a74349892c6e",
+      "sha256": "fb571d3abf9033dfe0c1bae5bca77b4d986fe06752d5bdf4b22be61a91b1d6c0",
       "embedded_snippets": [
         "docs_src/response_status_code/tutorial001.py",
         "docs_src/response_status_code/tutorial001.py",
@@ -147,7 +147,7 @@
     {
       "file": "cors.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
-      "sha256": "f96fa2bf814420440d5f91e9469bec7ca9210dddeca071317332928bbe0f93dc",
+      "sha256": "62d2f9c4b393b72bb3f8c99cae8bf94017a394486831def81e712b5baded5ae5",
       "embedded_snippets": [
         "docs_src/cors/tutorial001.py"
       ]
@@ -155,7 +155,7 @@
     {
       "file": "middleware.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/middleware.md",
-      "sha256": "9bce2075b70a339ebb33c97042df43d5daaa680736d96af96a5a093e33e9d927",
+      "sha256": "b2b4961d46e7ffd5f90f2113d0fca0f4170d062f46a4dcf2ce0d8cc963e4faa3",
       "embedded_snippets": [
         "docs_src/middleware/tutorial001.py",
         "docs_src/middleware/tutorial001.py"
@@ -164,7 +164,7 @@
     {
       "file": "background-tasks.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/background-tasks.md",
-      "sha256": "7045737df21de82b517f9d335fe36b43e8413d86f73fded7b9701299694099cb",
+      "sha256": "cada9abeb62bf85b62dc59b672e991e3c40fe84041da94fbee46e6b0489ee154",
       "embedded_snippets": [
         "docs_src/background_tasks/tutorial001.py",
         "docs_src/background_tasks/tutorial001.py",
@@ -179,7 +179,7 @@
     {
       "file": "testing.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/testing.md",
-      "sha256": "ddb912e7ff6fe64eae41b914691f1486faadc2edb37c8ce59665e70847d79228",
+      "sha256": "ea92580ec5e2557deb25c907ac5a25596ecfda669b22f2c2cd2d06df2e6bed7a",
       "embedded_snippets": [
         "docs_src/app_testing/tutorial001.py",
         "docs_src/app_testing/main.py",
@@ -195,7 +195,7 @@
     {
       "file": "static-files.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/static-files.md",
-      "sha256": "08b613d306467a07a8a0d33b4604d687551a06cecfa33c2d8351c6205c022484",
+      "sha256": "b15a2dd3e8de7b6e9c8b26a45092f270d67dff29d6c9fdddf068588608134385",
       "embedded_snippets": [
         "docs_src/static_files/tutorial001.py"
       ]
@@ -203,7 +203,7 @@
     {
       "file": "body-updates.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body-updates.md",
-      "sha256": "64e1002a0704df3b698f26f065ba552232435e577222098bffca2730edd98887",
+      "sha256": "076e23655c3c397e83dec3b4adfc7373fae8fbd81e398ee8aab76cadcff9cae1",
       "embedded_snippets": [
         "docs_src/body_updates/tutorial001.py",
         "docs_src/body_updates/tutorial002.py",
@@ -214,7 +214,7 @@
     {
       "file": "encoder.md",
       "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/encoder.md",
-      "sha256": "83320edce52dcd50898fb170cc249791e9cd3421a3b3f34f1097c9760525eaf5",
+      "sha256": "50be754e49f81c79acfbacb01c72db16ac0479c773c3c444ef3db9c972596376",
       "embedded_snippets": [
         "docs_src/encoder/tutorial001_py310.py",
         "docs_src/encoder/tutorial001.py"

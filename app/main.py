@@ -13,6 +13,7 @@ from starlette.concurrency import run_in_threadpool
 
 from app.config import Settings
 from app.engine import Engine
+from app.upstream import ProviderError
 
 
 class Question(BaseModel):
@@ -28,8 +29,10 @@ def create_app(settings=None):
     @asynccontextmanager
     async def lifespan(app):
         app.state.engine = Engine(settings)
-        yield
-        app.state.engine.close()
+        try:
+            yield
+        finally:
+            app.state.engine.close()
 
     app = FastAPI(title='知源 · 可追溯 RAG 知识库', version='0.1.0', lifespan=lifespan)
     static = Path(__file__).parent / 'static'
@@ -38,6 +41,8 @@ def create_app(settings=None):
     def perform(function, *args, **kwargs):
         try:
             return function(*args, **kwargs)
+        except ProviderError as exc:
+            raise HTTPException(exc.status, str(exc)) from exc
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
         except KeyError as exc:
@@ -53,6 +58,15 @@ def create_app(settings=None):
     @app.get('/api/health')
     def health():
         return {'status': 'ok', 'model_mode': settings.model_mode, 'rerank_available': bool(settings.rerank_base_url), 'vector_database': 'Qdrant', 'storage_mode': 'server' if settings.qdrant_url else 'embedded'}
+
+    @app.get('/api/ready')
+    def ready():
+        def check():
+            with app.state.engine.lock:
+                app.state.engine.db.execute('SELECT 1').fetchone()
+                app.state.engine.q.get_collection(app.state.engine.collection)
+            return {'status': 'ready'}
+        return perform(check)
 
     @app.get('/api/documents')
     def documents():

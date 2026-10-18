@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Literal
+from pydantic import Field
 
 
 class Settings(BaseSettings):
@@ -17,3 +18,8 @@ class Settings(BaseSettings):
     rerank_base_url: str = ''
     rerank_api_key: str = ''
     rerank_model: str = ''
+    model_timeout_seconds: float = Field(default=60, ge=1, le=300)
+    model_connect_timeout_seconds: float = Field(default=10, ge=1, le=60)
+    model_max_retries: int = Field(default=2, ge=0, le=4)
+    model_retry_max_delay_seconds: float = Field(default=5, ge=0, le=30)
+    model_stream_max_seconds: float = Field(default=180, ge=1, le=600)

@@ -4,6 +4,19 @@ import math
 import re
 from collections import Counter
 import httpx
+import time
+from app.upstream import Transport, ProviderError
+from functools import wraps
+
+
+def validate_response(function):
+    @wraps(function)
+    def call(*args, **kwargs):
+        try:
+            return function(*args, **kwargs)
+        except (KeyError, IndexError, TypeError, AttributeError) as exc:
+            raise ProviderError(502, '模型服务返回的数据结构不符合预期，请检查模型接口兼容性。') from exc
+    return call
 
 
 def tokens(text):
@@ -15,15 +28,12 @@ def tokens(text):
 class Provider:
     def __init__(self, settings):
         self.s = settings
+        self.transport = Transport(settings)
 
     def post(self, base, key, path, body):
-        if not base or not key:
-            raise ValueError('请先在 .env 配置模型 API 地址、密钥和模型名称。')
-        with httpx.Client(timeout=90) as client:
-            response = client.post(base.rstrip('/') + path, headers={'Authorization': f'Bearer {key}'}, json=body)
-            response.raise_for_status()
-            return response.json()
+        return self.transport.post(base, key, path, body)
 
+    @validate_response
     def embed(self, texts):
         if self.s.model_mode == 'demo':
             result = []
@@ -45,6 +55,7 @@ class Provider:
             result.extend(vectors)
         return result
 
+    @validate_response
     def answer(self, question, hits, on_token=None):
         if self.s.model_mode == 'demo':
             return '演示模式：以下为检索原文摘录，并非大模型生成。\n' + '\n'.join(f"{h['text'][:240]} [{i}]" for i, h in enumerate(hits, 1)), {}
@@ -59,27 +70,44 @@ class Provider:
                 raise ValueError('请先配置 LLM API。')
             body['stream'] = True
             parts, usage = [], {}
-            with httpx.Client(timeout=90) as client:
-                with client.stream('POST', self.s.llm_base_url.rstrip('/')+'/chat/completions', headers={'Authorization': f'Bearer {self.s.llm_api_key}'}, json=body) as response:
-                    response.raise_for_status()
-                    for line in response.iter_lines():
-                        if not line.startswith('data:'):
-                            continue
-                        value = line[5:].strip()
-                        if value == '[DONE]':
-                            break
+            started = time.monotonic()
+            completed = False
+            with self.transport.stream(self.s.llm_base_url, self.s.llm_api_key, '/chat/completions', body) as response:
+                for line in response.iter_lines():
+                    if time.monotonic()-started > self.s.model_stream_max_seconds:
+                        raise ProviderError(504, '生成时间超过上限，请缩短问题后重试。')
+                    if not line.startswith('data:'):
+                        continue
+                    value = line[5:].strip()
+                    if value == '[DONE]':
+                        completed = True
+                        break
+                    try:
                         event = json.loads(value)
-                        if event.get('usage'):
-                            usage = event['usage']
-                        choices = event.get('choices', [])
-                        delta = choices[0].get('delta', {}).get('content') if choices else None
-                        if delta:
-                            parts.append(delta)
-                            on_token(delta)
+                    except ValueError as exc:
+                        raise ProviderError(502, '模型流返回了无法解析的数据。') from exc
+                    if event.get('usage'):
+                        usage = event['usage']
+                    choices = event.get('choices', [])
+                    if choices and choices[0].get('finish_reason'):
+                        if choices[0]['finish_reason'] != 'stop':
+                            raise ProviderError(502, '模型未完整结束回答，可能达到输出长度限制，请缩短问题后重试。')
+                        completed = True
+                    delta = choices[0].get('delta', {}).get('content') if choices else None
+                    if delta:
+                        parts.append(delta)
+                        on_token(delta)
+            if not completed or not parts:
+                raise ProviderError(502, '模型输出中途断开或为空，请重新提问。')
             return ''.join(parts), usage
         data = self.post(self.s.llm_base_url, self.s.llm_api_key, '/chat/completions', body)
+        if not data['choices'][0]['message']['content']:
+            raise ProviderError(502, '模型返回了空回答，请稍后重试。')
+        if data['choices'][0].get('finish_reason') not in (None, 'stop'):
+            raise ProviderError(502, '模型回答未完整结束，请缩短问题后重试。')
         return data['choices'][0]['message']['content'], data.get('usage', {})
 
+    @validate_response
     def rerank(self, question, hits):
         if not self.s.rerank_base_url:
             raise ValueError('重排模式需要先配置 RERANK_BASE_URL、RERANK_API_KEY 和 RERANK_MODEL。')

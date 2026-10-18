@@ -76,7 +76,17 @@ http://127.0.0.1:8000/items/?skip=20
 //// tab | Python 3.10+
 
 ```Python hl_lines="7"
-{!> ../../../docs_src/query_params/tutorial002_py310.py!}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str, q: str | None = None):
+    if q:
+        return {"item_id": item_id, "q": q}
+    return {"item_id": item_id}
+
 ```
 
 ////
@@ -84,7 +94,19 @@ http://127.0.0.1:8000/items/?skip=20
 //// tab | Python 3.8+
 
 ```Python hl_lines="9"
-{!> ../../../docs_src/query_params/tutorial002.py!}
+from typing import Union
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str, q: Union[str, None] = None):
+    if q:
+        return {"item_id": item_id, "q": q}
+    return {"item_id": item_id}
+
 ```
 
 ////
@@ -113,7 +135,22 @@ FastAPI 不使用 `Optional[str]` 中的 `Optional`（只使用 `str`），但 `
 //// tab | Python 3.10+
 
 ```Python hl_lines="7"
-{!> ../../../docs_src/query_params/tutorial003_py310.py!}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str, q: str | None = None, short: bool = False):
+    item = {"item_id": item_id}
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
+
 ```
 
 ////
@@ -121,7 +158,24 @@ FastAPI 不使用 `Optional[str]` 中的 `Optional`（只使用 `str`），但 `
 //// tab | Python 3.8+
 
 ```Python hl_lines="9"
-{!> ../../../docs_src/query_params/tutorial003.py!}
+from typing import Union
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: str, q: Union[str, None] = None, short: bool = False):
+    item = {"item_id": item_id}
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
+
 ```
 
 ////
@@ -170,7 +224,24 @@ FastAPI 通过参数名进行检测：
 //// tab | Python 3.10+
 
 ```Python hl_lines="6 8"
-{!> ../../../docs_src/query_params/tutorial004_py310.py!}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/users/{user_id}/items/{item_id}")
+async def read_user_item(
+    user_id: int, item_id: str, q: str | None = None, short: bool = False
+):
+    item = {"item_id": item_id, "owner_id": user_id}
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
+
 ```
 
 ////
@@ -178,7 +249,26 @@ FastAPI 通过参数名进行检测：
 //// tab | Python 3.8+
 
 ```Python hl_lines="8 10"
-{!> ../../../docs_src/query_params/tutorial004.py!}
+from typing import Union
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/users/{user_id}/items/{item_id}")
+async def read_user_item(
+    user_id: int, item_id: str, q: Union[str, None] = None, short: bool = False
+):
+    item = {"item_id": item_id, "owner_id": user_id}
+    if q:
+        item.update({"q": q})
+    if not short:
+        item.update(
+            {"description": "This is an amazing item that has a long description"}
+        )
+    return item
+
 ```
 
 ////
@@ -249,7 +339,18 @@ http://127.0.0.1:8000/items/foo-item?needy=sooooneedy
 //// tab | Python 3.10+
 
 ```Python hl_lines="8"
-{!> ../../../docs_src/query_params/tutorial006_py310.py!}
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/items/{item_id}")
+async def read_user_item(
+    item_id: str, needy: str, skip: int = 0, limit: int | None = None
+):
+    item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
+    return item
+
 ```
 
 ////
@@ -257,7 +358,20 @@ http://127.0.0.1:8000/items/foo-item?needy=sooooneedy
 //// tab | Python 3.8+
 
 ```Python hl_lines="10"
-{!> ../../../docs_src/query_params/tutorial006.py!}
+from typing import Union
+
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get("/items/{item_id}")
+async def read_user_item(
+    item_id: str, needy: str, skip: int = 0, limit: Union[int, None] = None
+):
+    item = {"item_id": item_id, "needy": needy, "skip": skip, "limit": limit}
+    return item
+
 ```
 
 ////

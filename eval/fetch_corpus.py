@@ -38,9 +38,9 @@ def main():
                 pattern = r'\{\*\s*'+re.escape(snippet)+r'\s*[^}]*\*\}'
                 code = '\n```python\n'+code_response.text+'\n```\n'
                 text = re.sub(pattern, lambda _: code, text)
-                text = re.sub(r'\{!\s*(?:\.\./)*'+re.escape(snippet)+r'\s*!\}', lambda _: code_response.text, text)
+                text = re.sub(r'\{!>?\s*(?:\.\./)*'+re.escape(snippet)+r'\s*!\}', lambda _: code_response.text, text)
             (root / f'{name}.md').write_text(text, encoding='utf-8')
-            sources.append({'file': f'{name}.md', 'url': f'https://github.com/fastapi/fastapi/blob/{sha}/{path}', 'sha256': hashlib.sha256(text.encode()).hexdigest(), 'embedded_snippets': snippets})
+            sources.append({'file': f'{name}.md', 'url': f'https://github.com/fastapi/fastapi/blob/{sha}/{path}', 'sha256': hashlib.sha256((root / f'{name}.md').read_bytes()).hexdigest(), 'embedded_snippets': snippets})
             print('fetched', name, flush=True)
         manifest_path.write_text(json.dumps({'repository':'fastapi/fastapi','commit':sha,'license':'MIT','transformation':'official snippet directives expanded to full Python files; remaining Markdown preserved','sources':sources},ensure_ascii=False,indent=2),encoding='utf-8')
 
