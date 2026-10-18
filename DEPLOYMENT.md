@@ -3,9 +3,10 @@
 ## 当前状态
 
 - 已实现模型连接与读取超时、有限退避重试、脱敏错误提示、流式中断检测和存储就绪检查。
-- Compose YAML 与项目配置静态检查可运行；这不等于镜像构建或容器运行通过。
-- 本机未检测到 Docker CLI / Docker Desktop；Ubuntu WSL 启动还出现网络配置错误 `0x8007054f`。实际构建、容器启动及容器数据持久化尚未验证。
-- Windows 上尝试跨平台下载 Linux 依赖时，pip 仍按 Windows 标记选择了 pywin32，因此该检查未完成，不能据此判断 Linux 镜像是否兼容。最终以 Docker 构建为准。
+- 已完成容器化部署实测：2026-10-18，Docker Desktop 29.8.2 / Compose v5.6.0，基础镜像 `python:3.12-slim`、`qdrant/qdrant:v1.19.1`。
+- 独立验收 `scripts/verify_docker.py` 在演示模式下通过全部 5 项检查：Compose 配置、镜像构建与启动、容器内上传/检索/问答、两个容器重启后数据保留、删除清理。
+- 该验收覆盖镜像构建、容器启动、Qdrant 服务端存储与数据持久化，全程不调用付费 API；尚未覆盖容器内对接真实云模型（LLM/Embedding/Rerank），配置 `.env` 后仍需自行确认一次。
+- 结果落盘 `data/docker-verification.json`（`data/` 已被 `.gitignore` 忽略，不入库）；本文件「独立容器验收」一节记录了最近一次结果。
 
 ## 可靠性边界
 
@@ -42,6 +43,8 @@ node scripts/check_compose.cjs
 ```
 
 第二个命令需要可用 Docker，使用随机 Compose 项目、独立数据卷和端口 18002；演示模型配置覆盖云模型密钥，不调用付费 API。验证构建、就绪、上传问答、两个容器重启后数据保留、删除清理。结果写入 `data/docker-verification.json`。脚本结束关闭自己的容器并保留自己的卷，不触碰现有服务；多次运行会留下多个独立验收卷。
+
+最近一次验收结果（2026-10-18，本机 Docker Desktop 29.8.2）：`passed`，检查项 `compose_config`、`build_and_start`、`upload_retrieve_answer`、`restart_persistence`、`delete_cleanup` 全部通过；验收容器与网络已在脚本结束后自动清理。该结果仅代表演示模式（离线）全链路，不代表真实云模型在容器内可用。
 
 ## 回归测试
 
