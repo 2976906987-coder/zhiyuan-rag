@@ -1,5 +1,9 @@
 # 知源：可追溯 RAG 智能知识库问答系统
 
+[![Verify RAG project](https://github.com/2976906987-coder/zhiyuan-rag/actions/workflows/verify.yml/badge.svg)](https://github.com/2976906987-coder/zhiyuan-rag/actions/workflows/verify.yml)
+
+项目仓库：https://github.com/2976906987-coder/zhiyuan-rag
+
 Python + FastAPI + LLM API + RAG + Qdrant 向量数据库。面向技术文档，关注检索对比、有效引用、版本过滤与文档生命周期。
 
 ## 快速运行（Windows / PowerShell）
@@ -96,4 +100,4 @@ python -m venv .venv
 - [项目进度与验证范围](PROGRESS.md)
 - [部署和可靠性说明](DEPLOYMENT.md)
 - [演示脚本、简历草稿与面试讲解](docs/DEMO_AND_RESUME.md)
-- GitHub 自动回归流程位于 `.github/workflows/verify.yml`，本地检查通过不代表 GitHub CI 已运行。
+- GitHub 自动回归流程位于 `.github/workflows/verify.yml`，已在 GitHub Linux 环境运行通过，实时状态见页首徽章。
