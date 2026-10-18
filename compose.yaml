@@ -1,0 +1,21 @@
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file: .env
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      DATA_DIR: /app/data
+    volumes:
+      - app_data:/app/data
+    depends_on:
+      - qdrant
+    restart: on-failure
+  qdrant:
+    image: qdrant/qdrant:v1.14.1
+    volumes:
+      - qdrant_data:/qdrant/storage
+volumes:
+  app_data:
+  qdrant_data:

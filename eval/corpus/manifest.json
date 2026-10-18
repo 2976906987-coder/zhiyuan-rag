@@ -1,0 +1,224 @@
+{
+  "repository": "fastapi/fastapi",
+  "commit": "40e33e492dbf4af6172997f4e3238a32e56cbe26",
+  "license": "MIT",
+  "transformation": "official snippet directives expanded to full Python files; remaining Markdown preserved",
+  "sources": [
+    {
+      "file": "first-steps.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/first-steps.md",
+      "sha256": "073676b2dc715b62529f5d6bd1d1453814c468a342786566a727e8ea7f270f1d",
+      "embedded_snippets": [
+        "docs_src/first_steps/tutorial001.py",
+        "docs_src/first_steps/tutorial001.py",
+        "docs_src/first_steps/tutorial001.py",
+        "docs_src/first_steps/tutorial002.py",
+        "docs_src/first_steps/tutorial001.py",
+        "docs_src/first_steps/tutorial001.py",
+        "docs_src/first_steps/tutorial003.py",
+        "docs_src/first_steps/tutorial001.py"
+      ]
+    },
+    {
+      "file": "path-params.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/path-params.md",
+      "sha256": "339054bf6c4e67f9cd8d5f8ae0c4db9f82ad9b328a8d77ba6c6fffc9770ba7de",
+      "embedded_snippets": [
+        "docs_src/path_params/tutorial001.py",
+        "docs_src/path_params/tutorial002.py",
+        "docs_src/path_params/tutorial003.py",
+        "docs_src/path_params/tutorial005.py",
+        "docs_src/path_params/tutorial005.py",
+        "docs_src/path_params/tutorial005.py",
+        "docs_src/path_params/tutorial005.py",
+        "docs_src/path_params/tutorial005.py",
+        "docs_src/path_params/tutorial004.py"
+      ]
+    },
+    {
+      "file": "query-params.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/query-params.md",
+      "sha256": "1754472a93928b9c99d6310a28e7b79a92e60cf1ddd821c969efe5ef34d2b70e",
+      "embedded_snippets": [
+        "docs_src/query_params/tutorial001.py",
+        "docs_src/query_params/tutorial002_py310.py",
+        "docs_src/query_params/tutorial002.py",
+        "docs_src/query_params/tutorial003_py310.py",
+        "docs_src/query_params/tutorial003.py",
+        "docs_src/query_params/tutorial004_py310.py",
+        "docs_src/query_params/tutorial004.py",
+        "docs_src/query_params/tutorial005.py",
+        "docs_src/query_params/tutorial006_py310.py",
+        "docs_src/query_params/tutorial006.py"
+      ]
+    },
+    {
+      "file": "body.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body.md",
+      "sha256": "16db7d2ac3d05e01e0e437f3e507119c5bbadd5ab04082b5361f435c3e5a258b",
+      "embedded_snippets": [
+        "docs_src/body/tutorial001_py310.py",
+        "docs_src/body/tutorial001.py",
+        "docs_src/body/tutorial001_py310.py",
+        "docs_src/body/tutorial001.py",
+        "docs_src/body/tutorial001_py310.py",
+        "docs_src/body/tutorial001.py",
+        "docs_src/body/tutorial002_py310.py",
+        "docs_src/body/tutorial002.py",
+        "docs_src/body/tutorial003_py310.py",
+        "docs_src/body/tutorial003.py",
+        "docs_src/body/tutorial004_py310.py",
+        "docs_src/body/tutorial004.py"
+      ]
+    },
+    {
+      "file": "request-files.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/request-files.md",
+      "sha256": "df7b625a3455faaed0f185e4b8b0b9126592e391922aa4c64c66c8768c133ae1",
+      "embedded_snippets": [
+        "docs_src/request_files/tutorial001.py",
+        "docs_src/request_files/tutorial001.py",
+        "docs_src/request_files/tutorial001.py",
+        "docs_src/request_files/tutorial001_02_py310.py",
+        "docs_src/request_files/tutorial001_02.py",
+        "docs_src/request_files/tutorial001_03.py",
+        "docs_src/request_files/tutorial002_py39.py",
+        "docs_src/request_files/tutorial002.py",
+        "docs_src/request_files/tutorial003_py39.py",
+        "docs_src/request_files/tutorial003.py"
+      ]
+    },
+    {
+      "file": "request-forms.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/request-forms.md",
+      "sha256": "29a1ff9e4af3e100673c69a7e2211d8c7e297b1337aef7347a5bc09f58dcb5a3",
+      "embedded_snippets": [
+        "docs_src/request_forms/tutorial001.py",
+        "docs_src/request_forms/tutorial001.py"
+      ]
+    },
+    {
+      "file": "handling-errors.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/handling-errors.md",
+      "sha256": "fb5bf3e7f7ecbd1dae2b1bdf23bd0459e71b5e0eff602fda1cf9048da9de5a5c",
+      "embedded_snippets": [
+        "docs_src/handling_errors/tutorial001.py",
+        "docs_src/handling_errors/tutorial001.py",
+        "docs_src/handling_errors/tutorial002.py",
+        "docs_src/handling_errors/tutorial003.py",
+        "docs_src/handling_errors/tutorial004.py",
+        "docs_src/handling_errors/tutorial004.py",
+        "docs_src/handling_errors/tutorial005.py",
+        "docs_src/handling_errors/tutorial006.py"
+      ]
+    },
+    {
+      "file": "response-model.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/response-model.md",
+      "sha256": "641fc5fc02d5b8a9f4f293b78fe223b9e87b71f8683b23026f275af24031bfdb",
+      "embedded_snippets": [
+        "docs_src/response_model/tutorial001_py310.py",
+        "docs_src/response_model/tutorial001_py39.py",
+        "docs_src/response_model/tutorial001.py",
+        "docs_src/response_model/tutorial002.py",
+        "docs_src/response_model/tutorial002.py",
+        "docs_src/response_model/tutorial003_py310.py",
+        "docs_src/response_model/tutorial003.py",
+        "docs_src/response_model/tutorial003_py310.py",
+        "docs_src/response_model/tutorial003.py",
+        "docs_src/response_model/tutorial003_py310.py",
+        "docs_src/response_model/tutorial003.py",
+        "docs_src/response_model/tutorial004.py",
+        "docs_src/response_model/tutorial004.py",
+        "docs_src/response_model/tutorial005.py",
+        "docs_src/response_model/tutorial006.py"
+      ]
+    },
+    {
+      "file": "response-status-code.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/response-status-code.md",
+      "sha256": "ef35d6be35f0053fdec183d3d4a979b760a65cb44d46bd0fddd4a74349892c6e",
+      "embedded_snippets": [
+        "docs_src/response_status_code/tutorial001.py",
+        "docs_src/response_status_code/tutorial001.py",
+        "docs_src/response_status_code/tutorial002.py"
+      ]
+    },
+    {
+      "file": "cors.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/cors.md",
+      "sha256": "f96fa2bf814420440d5f91e9469bec7ca9210dddeca071317332928bbe0f93dc",
+      "embedded_snippets": [
+        "docs_src/cors/tutorial001.py"
+      ]
+    },
+    {
+      "file": "middleware.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/middleware.md",
+      "sha256": "9bce2075b70a339ebb33c97042df43d5daaa680736d96af96a5a093e33e9d927",
+      "embedded_snippets": [
+        "docs_src/middleware/tutorial001.py",
+        "docs_src/middleware/tutorial001.py"
+      ]
+    },
+    {
+      "file": "background-tasks.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/background-tasks.md",
+      "sha256": "7045737df21de82b517f9d335fe36b43e8413d86f73fded7b9701299694099cb",
+      "embedded_snippets": [
+        "docs_src/background_tasks/tutorial001.py",
+        "docs_src/background_tasks/tutorial001.py",
+        "docs_src/background_tasks/tutorial001.py",
+        "docs_src/background_tasks/tutorial002_an_py310.py",
+        "docs_src/background_tasks/tutorial002_an_py39.py",
+        "docs_src/background_tasks/tutorial002_an.py",
+        "docs_src/background_tasks/tutorial002_py310.py",
+        "docs_src/background_tasks/tutorial002.py"
+      ]
+    },
+    {
+      "file": "testing.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/testing.md",
+      "sha256": "ddb912e7ff6fe64eae41b914691f1486faadc2edb37c8ce59665e70847d79228",
+      "embedded_snippets": [
+        "docs_src/app_testing/tutorial001.py",
+        "docs_src/app_testing/main.py",
+        "docs_src/app_testing/test_main.py",
+        "docs_src/app_testing/app_b_an_py310/main.py",
+        "docs_src/app_testing/app_b_an_py39/main.py",
+        "docs_src/app_testing/app_b_an/main.py",
+        "docs_src/app_testing/app_b_py310/main.py",
+        "docs_src/app_testing/app_b/main.py",
+        "docs_src/app_testing/app_b/test_main.py"
+      ]
+    },
+    {
+      "file": "static-files.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/static-files.md",
+      "sha256": "08b613d306467a07a8a0d33b4604d687551a06cecfa33c2d8351c6205c022484",
+      "embedded_snippets": [
+        "docs_src/static_files/tutorial001.py"
+      ]
+    },
+    {
+      "file": "body-updates.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/body-updates.md",
+      "sha256": "64e1002a0704df3b698f26f065ba552232435e577222098bffca2730edd98887",
+      "embedded_snippets": [
+        "docs_src/body_updates/tutorial001.py",
+        "docs_src/body_updates/tutorial002.py",
+        "docs_src/body_updates/tutorial002.py",
+        "docs_src/body_updates/tutorial002.py"
+      ]
+    },
+    {
+      "file": "encoder.md",
+      "url": "https://github.com/fastapi/fastapi/blob/40e33e492dbf4af6172997f4e3238a32e56cbe26/docs/zh/docs/tutorial/encoder.md",
+      "sha256": "83320edce52dcd50898fb170cc249791e9cd3421a3b3f34f1097c9760525eaf5",
+      "embedded_snippets": [
+        "docs_src/encoder/tutorial001_py310.py",
+        "docs_src/encoder/tutorial001.py"
+      ]
+    }
+  ]
+}
