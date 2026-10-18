@@ -5,8 +5,9 @@
 - 已实现模型连接与读取超时、有限退避重试、脱敏错误提示、流式中断检测和存储就绪检查。
 - 已完成容器化部署实测：2026-10-18，Docker Desktop 29.8.2 / Compose v5.6.0，基础镜像 `python:3.12-slim`、`qdrant/qdrant:v1.19.1`。
 - 独立验收 `scripts/verify_docker.py` 在演示模式下通过全部 5 项检查：Compose 配置、镜像构建与启动、容器内上传/检索/问答、两个容器重启后数据保留、删除清理。
-- 该验收覆盖镜像构建、容器启动、Qdrant 服务端存储与数据持久化，全程不调用付费 API；尚未覆盖容器内对接真实云模型（LLM/Embedding/Rerank），配置 `.env` 后仍需自行确认一次。
-- 结果落盘 `data/docker-verification.json`（`data/` 已被 `.gitignore` 忽略，不入库）；本文件「独立容器验收」一节记录了最近一次结果。
+- 离线验收覆盖镜像构建、容器启动、Qdrant 服务端存储与数据持久化，全程不调用付费 API。
+- 已用 `.env` 真实密钥完成容器内真实云模型联调（`scripts/verify_docker_real.py`）：真实 Embedding 入库、LLM 与 Rerank 问答、资料外问题拒答全部通过。该脚本会产生少量 API 费用。
+- 验收结果分别落盘 `data/docker-verification.json` 与 `data/docker-real-verification.json`（`data/` 已被 `.gitignore` 忽略，不入库）；最近一次结果见「独立容器验收」一节。
 
 ## 可靠性边界
 
@@ -44,7 +45,17 @@ node scripts/check_compose.cjs
 
 第二个命令需要可用 Docker，使用随机 Compose 项目、独立数据卷和端口 18002；演示模型配置覆盖云模型密钥，不调用付费 API。验证构建、就绪、上传问答、两个容器重启后数据保留、删除清理。结果写入 `data/docker-verification.json`。脚本结束关闭自己的容器并保留自己的卷，不触碰现有服务；多次运行会留下多个独立验收卷。
 
-最近一次验收结果（2026-10-18，本机 Docker Desktop 29.8.2）：`passed`，检查项 `compose_config`、`build_and_start`、`upload_retrieve_answer`、`restart_persistence`、`delete_cleanup` 全部通过；验收容器与网络已在脚本结束后自动清理。该结果仅代表演示模式（离线）全链路，不代表真实云模型在容器内可用。
+最近一次验收结果（2026-10-18，本机 Docker Desktop 29.8.2）：`passed`，检查项 `compose_config`、`build_and_start`、`upload_retrieve_answer`、`restart_persistence`、`delete_cleanup` 全部通过；验收容器与网络已在脚本结束后自动清理。该结果仅代表演示模式（离线）全链路。
+
+### 真实云模型联调（会产生少量费用）
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verify_docker_real.py
+```
+
+该脚本使用 `.env` 真实密钥、独立 Compose 项目与端口 18004，验证容器内 `model_mode=api`、真实 Embedding 入库、默认混合检索 + LLM 问答、Rerank 问答（如已配置）以及资料外问题拒答；结束后删除自己的容器与卷，不触碰现有服务。
+
+最近一次结果（2026-10-18，本机 Docker Desktop 29.8.2）：`passed`，检查项 `compose_config`、`build_and_start`、`health_api_mode`、`real_embedding_ingest`、`real_llm_answer`、`real_rerank_answer`、`refuse_out_of_scope` 全部通过。此为最小规模冒烟（单文档、数次调用），用于证明容器内可连通真实模型，不代表压测或稳定性结果。
 
 ## 回归测试
 

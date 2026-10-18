@@ -65,7 +65,7 @@ python -m venv .venv
 
 ## Docker
 
-配置 .env 后运行 `docker compose up --build -d`。应用仅绑定本机 8002 端口，Qdrant 不对外暴露；数据使用命名卷持久化。Compose 路径需要 Docker Desktop / Linux 容器。Qdrant 本地模式默认无需 Docker，适合开发验收。已补齐数据库就绪等待、健康检查与独立验收脚本；演示模式（离线）下的镜像构建、容器启动、问答、重启持久化与删除清理已在本机实测通过（2026-10-18，详见 [部署与可靠性说明](DEPLOYMENT.md)）。容器内对接真实云模型的联调尚未覆盖，配置 .env 后需自行确认一次。
+配置 .env 后运行 `docker compose up --build -d`。应用仅绑定本机 8002 端口，Qdrant 不对外暴露；数据使用命名卷持久化。Compose 路径需要 Docker Desktop / Linux 容器。Qdrant 本地模式默认无需 Docker，适合开发验收。已补齐数据库就绪等待、健康检查与独立验收脚本；演示模式（离线）的镜像构建、容器启动、问答、重启持久化与删除清理已实测通过，容器内对接真实云模型（Embedding/Rerank/LLM）的联调也已通过（2026-10-18，详见 [部署与可靠性说明](DEPLOYMENT.md)）。真实联调脚本 `scripts/verify_docker_real.py` 会产生少量 API 费用。
 
 ## MVP 边界与后续
 
